@@ -1,0 +1,7 @@
+dataset,fname,purpose,source,description
+statology,statology.csv,reliability/icc,https://www.statology.org/intraclass-correlation-coefficient-python/,icc sample from web page
+hallgren-table5,Hallgren-Table-05.csv,reliability/icc,DOI: 10.20982/tqmp.08.1.p023,icc table from publication
+hallgren-table3,Hallgren-Table-03.csv,reliability/cohen-kappa,DOI: 10.20982/tqmp.08.1.p023,kappa table from publication
+HolzingerSwineford1939,HolzingerSwineford1939.csv,reliability/congeneric,https://lavaan.ugent.be/,lavaan
+Shrout_Fleiss,Shrout_Fleiss_1979.csv,reliability/icc,"Shrout, P. E., & Fleiss, J. L. (1979). Intraclass correlations:uses in assessing rater reliability. Psychological bulletin, 86(2), 420-428", Dataset from paper
+wine,wine.csv,reliability/icc,http://www.real-statistics.com/reliability/intraclass-correlation/, online source
