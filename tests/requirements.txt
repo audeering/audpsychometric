@@ -1,4 +1,8 @@
-audb
+# Only needed for internal test,
+# disable for now
+# audb
+# To avoid https://github.com/tholo/pytest-flake8/issues/87
+flake8 <5.0.0
 pytest
 pytest-flake8
 pytest-doctestplus

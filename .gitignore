@@ -5,7 +5,7 @@ build/
 dist/
 .idea/
 venv/
-.coverage
+coverage.xml
 docs/pics/*.svg
 docs/.ipynb_checkpoints
 docs/examples/output
