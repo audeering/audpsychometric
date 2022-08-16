@@ -13,7 +13,6 @@ import pandas as pd
 import pingouin as pg
 import pytest
 
-import audb
 import audmetric
 import audpsychometric
 
@@ -32,7 +31,9 @@ def generate_coreset_df(coreset_name="set133"):
 
     Returns:
         table containing the ratings in wide format
+
     """
+    import audb
 
     database_name = "projectsmile-salamander-agent-tone"
     db = audb.load(database_name, only_metadata=True)
