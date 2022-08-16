@@ -34,12 +34,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Ubuntu - install libsndfile
-      run: |
-        sudo apt-get update
-        sudo apt-get install --no-install-recommends --yes libsndfile1
-      if: matrix.os == 'ubuntu-latest'
-
     - name: Install package
       run: |
         python -m pip install --upgrade pip
