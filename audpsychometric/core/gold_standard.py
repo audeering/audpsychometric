@@ -165,7 +165,7 @@ def _confidence_numerical(row: pd.Series) -> float:
     """
     raters = row.index.tolist()
     cutoff_max = row[raters].max() / row[raters].mean()
-    return max([0., 1 - row[raters].std() / cutoff_max])
+    return max([0., 1 - row[raters].std(ddof=0) / cutoff_max])
 
 
 def rater_confidence_pearson(df: pd.DataFrame) -> dict:
