@@ -147,13 +147,11 @@ def _confidence_categorical(row: pd.Series) -> float:
     return np.sum(row[raters] == row["gold"]) / row[raters].count()
 
 
-def _confidence_numerical(row: pd.Series,
-                          *,
-                          cutoff_max: float = 2.5) -> float:
+def _confidence_numerical(row: pd.Series) -> float:
     """Functional to calculate confidence score row-wise - numerical.
 
     .. math::
-       confidence_{row} = max(0, 1 - std(row) / 2.5)
+       confidence_{row} = max(0, 1 - std(row) / cutoff_max)
 
     where
         - std is the standard deviation of the data
@@ -166,6 +164,7 @@ def _confidence_numerical(row: pd.Series,
 
     """
     raters = row.index.tolist()
+    cutoff_max = row[raters].max() / row[raters].mean()
     return max([0., 1 - row[raters].std() / cutoff_max])
 
 
