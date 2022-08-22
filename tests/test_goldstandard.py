@@ -37,13 +37,13 @@ def test_mode_based_gold_standard():
 
 def test_mean_based_gold_standard(df_holzinger_swineford):
     """Happy Flow test for mode based gold standard"""
-    df = audpsychometric.gold_standard_mean(df_holzinger_swineford)
-    assert df.confidence.min() == 0
+    df = audpsychometric.gold_standard_mean(df_holzinger_swineford, 0, 10)
+    assert df.confidence.min() != 0
 
 
 def test_median_based_gold_standard(df_holzinger_swineford):
     """Test that  median gold standard returns df"""
-    df = audpsychometric.gold_standard_median(df_holzinger_swineford)
+    df = audpsychometric.gold_standard_median(df_holzinger_swineford, 0, 10)
     assert isinstance(df, pd.DataFrame)
     assert "gold_standard" in df.columns
     assert "confidence" in df.columns
@@ -52,7 +52,7 @@ def test_median_based_gold_standard(df_holzinger_swineford):
 
 def test_evaluator_weighted_estimator(df_holzinger_swineford):
     """Happy Flow test for mode based gold standard"""
-    df_ewe = audpsychometric.evaluator_weighted_estimator(df_holzinger_swineford)
+    df_ewe = audpsychometric.evaluator_weighted_estimator(df_holzinger_swineford, 0, 10)
 
     # results obtained from reference implementation
     test_data = io.StringIO(
