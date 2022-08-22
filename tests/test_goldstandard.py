@@ -34,11 +34,19 @@ def test_mode_based_gold_standard():
     assert "confidence" in df.columns
     assert np.alltrue((df['confidence'] >= 0.) & (df['confidence'] <= 1.).values)
 
-
-def test_mean_based_gold_standard(df_holzinger_swineford):
+@pytest.mark.parametrize(
+    'df, minimum, maximum, df_expected',
+    [(
+        df_holzinger_swineford,
+        0,
+        10,
+        df_expected,
+    )]
+)
+def test_mean_based_gold_standard(df_holzinger_swineford, df_expected, minimum=0, maximum=10):
     """Happy Flow test for mode based gold standard"""
-    df = audpsychometric.gold_standard_mean(df_holzinger_swineford, 0, 10)
-    assert df.confidence.min() != 0
+    df = audpsychometric.gold_standard_mean(df_holzinger_swineford, minimum, maximum)
+    pd.testing.assert_frame_equal(df, df_expected)
 
 
 def test_median_based_gold_standard(df_holzinger_swineford):
