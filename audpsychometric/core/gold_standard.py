@@ -8,9 +8,10 @@ import audmetric
 
 
 def gold_standard_mean(
-    df: pd.DataFrame,
-    minimum: float,
-    maximum: float) -> pd.DataFrame:
+        df: pd.DataFrame,
+        minimum: float,
+        maximum: float,
+) -> pd.DataFrame:
     r"""Calculate the gold standard as the mean of raters' votes.
 
     This functional uses the numerical confidence calculation.
@@ -38,9 +39,11 @@ def gold_standard_mean(
     return df_result
 
 
-def gold_standard_median(df: pd.DataFrame,
-                         minimum: float,
-                         maximum: float):
+def gold_standard_median(
+        df: pd.DataFrame,
+        minimum: float,
+        maximum: float,
+) -> pd.DataFrame:
     r"""Calculate the gold standard as the median of raters' votes.
 
     The returned table
@@ -94,7 +97,7 @@ def evaluator_weighted_estimator(
     df: pd.DataFrame,
     minimum: float,
     maximim: float
-):
+) -> pd.DataFrame:
     r"""Calculate EWE (evaluator weighted estimator).
 
     This measure of gold standard calculation is described in
@@ -162,9 +165,11 @@ def _confidence_categorical(row: pd.Series) -> float:
     return np.sum(row[raters] == row["gold"]) / row[raters].count()
 
 
-def _confidence_numerical(row: pd.Series,
-                          minimum: float,
-                          maximum: float) -> float:
+def _confidence_numerical(
+        row: pd.Series,
+        minimum: float,
+        maximum: float,
+) -> float:
     """Functional to calculate confidence score row-wise - numerical.
 
     .. math::
