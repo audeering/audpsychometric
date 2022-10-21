@@ -7,7 +7,11 @@ import pandas as pd
 import audmetric
 
 
-def gold_standard_mean(df: pd.DataFrame) -> pd.DataFrame:
+def gold_standard_mean(
+        df: pd.DataFrame,
+        minimum: float,
+        maximum: float,
+) -> pd.DataFrame:
     r"""Calculate the gold standard as the mean of raters' votes.
 
     This functional uses the numerical confidence calculation.
@@ -18,6 +22,8 @@ def gold_standard_mean(df: pd.DataFrame) -> pd.DataFrame:
 
     Args:
         df: DataFrame in wide format, one rater per column
+        mimum: minimum for cut off calculation in confidence
+        maximum: maximum for cut off calculation in confidence
 
     Returns:
         table containing `gold_standard` and `confidence` columns
@@ -33,7 +39,11 @@ def gold_standard_mean(df: pd.DataFrame) -> pd.DataFrame:
     return df_result
 
 
-def gold_standard_median(df):
+def gold_standard_median(
+        df: pd.DataFrame,
+        minimum: float,
+        maximum: float,
+) -> pd.DataFrame:
     r"""Calculate the gold standard as the median of raters' votes.
 
     The returned table
@@ -42,6 +52,8 @@ def gold_standard_median(df):
 
     Args:
         df: DataFrame in wide format, one rater per column
+        mimum: minimum for cut off calculation in confidence
+        maximum: maximum for cut off calculation in confidence
 
     Returns:
         table containing `gold_standard` and `confidence` columns
@@ -81,7 +93,11 @@ def gold_standard_mode(df: pd.DataFrame) -> pd.DataFrame:
     return df_result
 
 
-def evaluator_weighted_estimator(df):
+def evaluator_weighted_estimator(
+    df: pd.DataFrame,
+    minimum: float,
+    maximim: float
+) -> pd.DataFrame:
     r"""Calculate EWE (evaluator weighted estimator).
 
     This measure of gold standard calculation is described in
@@ -101,6 +117,8 @@ def evaluator_weighted_estimator(df):
 
     Args:
         df: DataFrame in wide format, one rater per column
+        mimum: minimum for cut off calculation in confidence
+        maximum: maximum for cut off calculation in confidence
 
     Returns:
         table containing `gold_standard` and `confidence` columns
@@ -147,26 +165,31 @@ def _confidence_categorical(row: pd.Series) -> float:
     return np.sum(row[raters] == row["gold"]) / row[raters].count()
 
 
-def _confidence_numerical(row: pd.Series,
-                          *,
-                          cutoff_max: float = 2.5) -> float:
+def _confidence_numerical(
+        row: pd.Series,
+        minimum: float,
+        maximum: float,
+) -> float:
     """Functional to calculate confidence score row-wise - numerical.
 
     .. math::
-       confidence_{row} = max(0, 1 - std(row) / 2.5)
+       confidence_{row} = max(0, 1 - std(row) / cutoff_max)
 
     where
         - std is the standard deviation of the data
 
     Args:
         row: one row of the table containing raters' values
+        minimum: minimum value of the data to calculate cut off
+        maximum: maximum value of the data to calculate cut off
 
     Returns:
         numerical confidence score
 
     """
     raters = row.index.tolist()
-    return max([0., 1 - row[raters].std() / cutoff_max])
+    cutoff_max = maximum - 1 / 2 * (minimum + maximum)
+    return max([0., 1 - row[raters].std(ddof=0) / cutoff_max])
 
 
 def rater_confidence_pearson(df: pd.DataFrame) -> dict:
