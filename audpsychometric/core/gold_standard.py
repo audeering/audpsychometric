@@ -11,6 +11,8 @@ def gold_standard_mean(
         df: pd.DataFrame,
         minimum: float,
         maximum: float,
+        *,
+        axis: int = 1,
 ) -> pd.DataFrame:
     r"""Calculate the gold standard as the mean of raters' votes.
 
@@ -24,18 +26,20 @@ def gold_standard_mean(
         df: DataFrame in wide format, one rater per column
         mimum: minimum for cut off calculation in confidence
         maximum: maximum for cut off calculation in confidence
+        axis: axis to calculate mean and confidences.
+            A value of ``1`` expects raters to be columns
 
     Returns:
         table containing `gold_standard` and `confidence` columns
 
     """
-
-    gold_standard = df.mean(axis=1)
-    df["gold"] = gold_standard
-
-    confidences = df.apply(_confidence_numerical, axis=1)
-    df_result = pd.DataFrame([gold_standard, confidences], columns=df.index).T
-    df_result.columns = ["gold_standard", "confidence"]
+    confidences = df.apply(
+        lambda x: _confidence_numerical(x, minimum, maximum),
+        axis=axis,
+    )
+    gold_standard = df.mean(axis=axis)
+    df_result = pd.concat([gold_standard, confidences], axis=1)
+    df_result.columns = ['gold_standard', 'confidence']
     return df_result
 
 
@@ -43,6 +47,8 @@ def gold_standard_median(
         df: pd.DataFrame,
         minimum: float,
         maximum: float,
+        *,
+        axis: int = 1,
 ) -> pd.DataFrame:
     r"""Calculate the gold standard as the median of raters' votes.
 
@@ -54,22 +60,28 @@ def gold_standard_median(
         df: DataFrame in wide format, one rater per column
         mimum: minimum for cut off calculation in confidence
         maximum: maximum for cut off calculation in confidence
+        axis: axis to calculate mean and confidences.
+            A value of ``1`` expects raters to be columns
 
     Returns:
         table containing `gold_standard` and `confidence` columns
 
     """
-
-    gold_standard = df.median(axis=1)
-    df["gold"] = gold_standard
-    confidences = df.apply(_confidence_numerical, axis=1)
-
-    df_result = pd.DataFrame([gold_standard, confidences], columns=df.index).T
-    df_result.columns = ["gold_standard", "confidence"]
+    confidences = df.apply(
+        lambda x: _confidence_numerical(x, minimum, maximum),
+        axis=axis,
+    )
+    gold_standard = df.median(axis=axis)
+    df_result = pd.concat([gold_standard, confidences], axis=1)
+    df_result.columns = ['gold_standard', 'confidence']
     return df_result
 
 
-def gold_standard_mode(df: pd.DataFrame) -> pd.DataFrame:
+def gold_standard_mode(
+        df: pd.DataFrame,
+        *,
+        axis: int = 1,
+) -> pd.DataFrame:
     r"""Calculate the gold standard as the median of raters' votes.
 
     The returned table has an index identical to the input df,
@@ -77,17 +89,20 @@ def gold_standard_mode(df: pd.DataFrame) -> pd.DataFrame:
 
     Args:
         df: DataFrame in wide format, one rater per column
+        axis: axis to calculate mean and confidences.
+            A value of ``1`` expects raters to be columns
 
     Returns:
         table containing `gold_standard` and `confidence` columns
 
     """
 
-    gold_standard = np.floor(df.mode(axis=1).mean(axis=1) + 0.5)
+    gold_standard = np.floor(df.mode(axis=axis).mean(axis=axis) + 0.5)
     df["gold"] = gold_standard
 
-    # calculate confidence value as the fraction of raters hitting the gold standard
-    confidences = df.apply(_confidence_categorical, axis=1)
+    # calculate confidence value as the fraction
+    # of raters hitting the gold standard
+    confidences = df.apply(_confidence_categorical, axis=axis)
     df_result = pd.DataFrame([gold_standard, confidences], columns=df.index).T
     df_result.columns = ["gold_standard", "confidence"]
     return df_result
@@ -96,7 +111,9 @@ def gold_standard_mode(df: pd.DataFrame) -> pd.DataFrame:
 def evaluator_weighted_estimator(
     df: pd.DataFrame,
     minimum: float,
-    maximim: float
+    maximum: float,
+    *,
+    axis: int = 1,
 ) -> pd.DataFrame:
     r"""Calculate EWE (evaluator weighted estimator).
 
@@ -119,12 +136,19 @@ def evaluator_weighted_estimator(
         df: DataFrame in wide format, one rater per column
         mimum: minimum for cut off calculation in confidence
         maximum: maximum for cut off calculation in confidence
+        axis: axis to calculate mean and confidences.
+            A value of ``1`` expects raters to be columns
+
 
     Returns:
         table containing `gold_standard` and `confidence` columns
 
     """
-    confidences = rater_confidence_pearson(df)
+    confidences = rater_confidence_pearson(df, axis=axis)
+
+    if axis == 0:
+        df = df.T
+
     raters = df.columns.tolist()
 
     def ewe(row):
@@ -137,7 +161,10 @@ def evaluator_weighted_estimator(
         data=df.apply(ewe, axis=1), index=df.index, columns=["EWE"]
     )
 
-    df_result["confidence"] = df.apply(_confidence_numerical, axis=1)
+    df_result["confidence"] = df.apply(
+        lambda x: _confidence_numerical(x, minimum, maximum),
+        axis=1,
+    )
 
     return df_result
 
@@ -173,7 +200,7 @@ def _confidence_numerical(
     """Functional to calculate confidence score row-wise - numerical.
 
     .. math::
-       confidence_{row} = max(0, 1 - std(row) / cutoff_max)
+       confidence_\text{row} = max(0, 1 - std(row) / cutoff_max)
 
     where
         - std is the standard deviation of the data
@@ -192,7 +219,11 @@ def _confidence_numerical(
     return max([0., 1 - row[raters].std(ddof=0) / cutoff_max])
 
 
-def rater_confidence_pearson(df: pd.DataFrame) -> dict:
+def rater_confidence_pearson(
+        df: pd.DataFrame,
+        *,
+        axis: int = 1,
+) -> dict:
     """Calculate the rater confidence.
 
     Calculate the rater confidence
@@ -209,11 +240,16 @@ def rater_confidence_pearson(df: pd.DataFrame) -> dict:
 
     Args:
         df: table in wide format
+        axis: axis to calculate mean and confidences.
+            A value of ``1`` expects raters to be columns
 
     Returns:
         dict with the rater confidences
 
     """
+
+    if axis == 0:
+        df = df.T
 
     raters = df.columns.tolist()
 
@@ -222,5 +258,8 @@ def rater_confidence_pearson(df: pd.DataFrame) -> dict:
         df_rater = df[rater].dropna().astype(float)
         df_others = df.drop(rater, axis=1).mean(axis=1).dropna()
         indices = df_rater.index.intersection(df_others.index)
-        confidences[rater] = audmetric.pearson_cc(df_rater.loc[indices], df_others.loc[indices])
+        confidences[rater] = audmetric.pearson_cc(
+            df_rater.loc[indices],
+            df_others.loc[indices],
+        )
     return confidences

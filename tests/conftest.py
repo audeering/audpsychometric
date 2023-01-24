@@ -10,13 +10,6 @@ def df_holzinger_swineford():
     df = df_dataset[cols_use].astype(np.float32)
     return df
 
-@pytest.fixture(scope="function")
-def df_expected():
-    df_dataset = datasets.read_dataset("HolzingerSwineford1939")
-    cols_use = [col for col in df_dataset.columns if col.startswith("x")]
-    df = df_dataset[cols_use].astype(np.float32)
-    expected_df = gold_standard_mean(df, 0, 10)
-    return expected_df
 
 @pytest.fixture(scope="session", autouse=True)
 def fixture_session():
