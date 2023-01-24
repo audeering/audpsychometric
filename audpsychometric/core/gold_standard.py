@@ -24,7 +24,7 @@ def gold_standard_mean(
 
     Args:
         df: DataFrame in wide format, one rater per column
-        mimum: minimum for cut off calculation in confidence
+        minimum: minimum for cut off calculation in confidence
         maximum: maximum for cut off calculation in confidence
         axis: axis to calculate mean and confidences.
             A value of ``1`` expects raters to be columns
@@ -58,7 +58,7 @@ def gold_standard_median(
 
     Args:
         df: DataFrame in wide format, one rater per column
-        mimum: minimum for cut off calculation in confidence
+        minimum: minimum for cut off calculation in confidence
         maximum: maximum for cut off calculation in confidence
         axis: axis to calculate mean and confidences.
             A value of ``1`` expects raters to be columns
@@ -134,7 +134,7 @@ def evaluator_weighted_estimator(
 
     Args:
         df: DataFrame in wide format, one rater per column
-        mimum: minimum for cut off calculation in confidence
+        minimum: minimum for cut off calculation in confidence
         maximum: maximum for cut off calculation in confidence
         axis: axis to calculate mean and confidences.
             A value of ``1`` expects raters to be columns
