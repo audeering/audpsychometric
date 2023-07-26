@@ -76,5 +76,4 @@ intersphinx_mapping = {
     'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
     'seaborn': ('https://seaborn.pydata.org/', None),
     'sklearn': ('http://scikit-learn.org/stable', None),
-    'statsmodels': ('http://www.statsmodels.org/stable/', None),
 }
