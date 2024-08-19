@@ -33,6 +33,7 @@ classifiers = [
 ]
 dependencies = [
     'audeer >=1.10.0',
+    'audmetric',
     'pingouin',
     'numpy',
     'pandas',
