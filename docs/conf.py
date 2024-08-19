@@ -52,6 +52,7 @@ copybutton_prompt_is_regexp = True
 linkcheck_ignore = [
     "https://gitlab.audeering.com",
     r".*evaluationdashboard.com/index.php/2012/09/22/*",
+    "https://pypi.org/project/audpsychometric/",  # no package published yet
 ]
 
 
