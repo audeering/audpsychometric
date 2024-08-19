@@ -1,5 +1,4 @@
-"""Provide example datasets for package
-"""
+"""Provide example datasets for package."""
 
 
 __all__ = ["read_dataset", "list_dataset"]
@@ -37,7 +36,7 @@ def read_dataset(data_set_name: str) -> pd.DataFrame:
 
 
 def list_datasets():
-    r"""List tests datasets available in package
+    r"""List tests datasets available in package.
 
     Args:
         None

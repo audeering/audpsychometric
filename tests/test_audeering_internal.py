@@ -1,4 +1,4 @@
-"""Tests that can only be run audeering-internally
+"""Tests that can only be run audeering-internally.
 
 These are marked by a pytest mark and can be selected with.
 
@@ -24,7 +24,7 @@ pytestmark = pytest.mark.internal
 
 
 def generate_coreset_df(coreset_name="set133"):
-    """Create the coreset df using audb
+    """Create the coreset df using audb.
 
     This coreset is prior to any mappint to n classes
 
@@ -74,12 +74,12 @@ def generate_coreset_df(coreset_name="set133"):
 
 @pytest.fixture(scope="module", autouse=True)
 def coreset_df() -> pd.DataFrame:
-    """Args:
+    """Coreset dataframe for the projectsmile salamander agent tone.
+
+    Args:
         None
     Returns:
         pd.DataFrame
-
-    generate coreset dataframe for the projectsmile salamander agent tone
 
     Initially, two coresets were considered candidates, set142
     and set133. Set 133 proved the right one.
@@ -113,7 +113,7 @@ def coreset_df() -> pd.DataFrame:
 
 
 def test_audeering_icc(coreset_df):
-    """Test the coreset results"""
+    """Test the coreset results."""
     # impute Flag
     impute = False
     if impute:
@@ -147,21 +147,10 @@ def test_audeering_icc(coreset_df):
         nan_policy="omit",
     )
 
-    print(icc_p)
     icc_1 = icc_p.loc[icc_p["Type"] == "ICC1"].iloc[0]
 
     assert np.isclose(icc_1["ICC"], 0.2180, atol=1e-4)
     assert np.isclose(icc_1["F"], 8.8059, atol=1e-4)
-
-    # Expected Results:
-    # icc_p
-    #     Type              Description       ICC          F  df1   df2           pval         CI95%
-    # 0   ICC1   Single raters absolute  0.218007   8.805960  183  4968  3.238633e-190  [0.18, 0.26]
-    # 1   ICC2     Single random raters  0.226355  14.350342  183  4941   0.000000e+00  [0.18, 0.28]
-    # 2   ICC3      Single fixed raters  0.322859  14.350342  183  4941   0.000000e+00  [0.28, 0.38]
-    # 3  ICC1k  Average raters absolute  0.886441   8.805960  183  4968  3.238633e-190  [0.86, 0.91]
-    # 4  ICC2k    Average random raters  0.891214  14.350342  183  4941   0.000000e+00  [0.86, 0.92]
-    # 5  ICC3k     Average fixed raters  0.930315  14.350342  183  4941   0.000000e+00  [0.91, 0.94]
 
     icc_aa, results = audpsychometric.intra_class_correlation(coreset_df)
     # first value test
@@ -179,7 +168,7 @@ def test_audeering_icc(coreset_df):
 
 
 def test_audeering_goldstandard_mean(coreset_df):
-    r"""coreset: happy flow for gold standard mean"""
+    r"""Coreset: happy flow for gold standard mean."""
     df = audpsychometric.gold_standard_mean(coreset_df)
     assert isinstance(df, pd.DataFrame)
     assert "gold_standard" in df.columns
@@ -188,7 +177,7 @@ def test_audeering_goldstandard_mean(coreset_df):
 
 
 def test_audeering_goldstandard_median(coreset_df):
-    r"""coreset: happy flow for gold standard median"""
+    r"""Coreset: happy flow for gold standard median."""
     df = audpsychometric.gold_standard_median(coreset_df)
     assert isinstance(df, pd.DataFrame)
     assert "gold_standard" in df.columns
@@ -197,7 +186,7 @@ def test_audeering_goldstandard_median(coreset_df):
 
 
 def test_audeering_goldstandard_mode(coreset_df):
-    r"""coreset: happy flow for mode"""
+    r"""Coreset: happy flow for mode."""
     df = audpsychometric.gold_standard_mode(coreset_df)
     assert isinstance(df, pd.DataFrame)
     assert "gold_standard" in df.columns
@@ -206,7 +195,7 @@ def test_audeering_goldstandard_mode(coreset_df):
 
 
 def test_confidence_values(coreset_df):
-    r"""Check that confidences correlate"""
+    r"""Check that confidences correlate."""
     df_ewe = audpsychometric.evaluator_weighted_estimator(coreset_df)
     df_mode = audpsychometric.gold_standard_mode(coreset_df)
 

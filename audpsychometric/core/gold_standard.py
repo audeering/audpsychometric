@@ -1,4 +1,4 @@
-"""Methods for calculating gold standards over individual raters' judgments"""
+r"""Calculating gold standards over individual raters' judgments."""
 
 
 import numpy as np
@@ -151,7 +151,7 @@ def evaluator_weighted_estimator(
     raters = df.columns.tolist()
 
     def ewe(row):
-        """Functional to determine ewe per row"""
+        """Functional to determine ewe per row."""
         total = sum([row[x] * confidences[x] for x in raters])
         total /= np.sum([confidences[x] for x in raters])
         return total
@@ -195,7 +195,7 @@ def _confidence_numerical(
     minimum: float,
     maximum: float,
 ) -> float:
-    """Functional to calculate confidence score row-wise - numerical.
+    r"""Functional to calculate confidence score row-wise - numerical.
 
     .. math::
        confidence_\text{row} = max(0, 1 - std(row) / cutoff_max)

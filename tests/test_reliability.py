@@ -6,7 +6,7 @@ import audpsychometric
 
 
 def test_icc():
-    """Test icc basic result validity"""
+    """Test icc basic result validity."""
     df_dataset = audpsychometric.datasets.read_dataset("wine")
 
     data_wide = df_dataset.pivot_table(index="Wine", columns="Judge", values="Scores")
@@ -29,7 +29,7 @@ def test_cronbachs_alpha():
 
 
 def test_congeneric_reliability(df_holzinger_swineford):
-    """Test congeneric reliability"""
+    """Test congeneric reliability."""
     coefficient, result = audpsychometric.congeneric_reliability(df_holzinger_swineford)
     assert np.isclose(coefficient, 0.9365, atol=1e-4)
     assert np.isclose(result["var. explained"][0], 0.3713, atol=1e-4)
@@ -37,12 +37,12 @@ def test_congeneric_reliability(df_holzinger_swineford):
 
 @pytest.mark.xfail(raises=ValueError)
 def test_anova_helper():
-    """Test that unknown anova parametrization raises exception"""
+    """Test that unknown anova parametrization raises exception."""
     audpsychometric.intra_class_correlation(pd.DataFrame(), anova_method="bbbb")
 
 
 def test_icc_nanremoval():
-    """Cover nan removal if statement"""
+    """Cover nan removal if statement."""
     df_dataset = audpsychometric.datasets.read_dataset("HolzingerSwineford1939")
     df_dataset = df_dataset[[x for x in df_dataset.columns if x.startswith("x")]]
     nan_mat = np.random.random(df_dataset.shape) < 0.1

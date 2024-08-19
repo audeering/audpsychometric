@@ -1,5 +1,4 @@
-"""Psychometric Functions for Interrater Reliability.
-"""
+"""Psychometric Functions for Interrater Reliability."""
 
 import typing
 
@@ -109,6 +108,8 @@ def intra_class_correlation(
     Args:
         df: table in wide format with one rater per column
         icc_type: ICC Method, see description below
+        anova_method: method for ANOVA calculation,
+            can be ``"pingouin"`` or ``"statsmodels"``
 
     Returns:
         icc and additional results lumped into dict
@@ -374,15 +375,15 @@ def intra_class_correlation(
     icc_rater_type = 3 * ["single"] + 3 * ["average"]
     icc_rating_type = ["absolute", "consistency", "consistency"] * 2
     icc_effect_type = ["-", "random", "fixed"] * 2
-    ICC = [icc_1_1, icc_2_1, icc_3_1, icc_1_k, icc_2_k, icc_3_k]
+    icc = [icc_1_1, icc_2_1, icc_3_1, icc_1_k, icc_2_k, icc_3_k]
 
     results = pd.DataFrame(
-        [icc_types, icc_rater_type, icc_rating_type, icc_effect_type, ICC]
+        [icc_types, icc_rater_type, icc_rating_type, icc_effect_type, icc]
     ).T
 
     vars = ["icc_type", "rater type", "rating type", "anova effect type", "icc"]
     results_df = pd.DataFrame(
-        [icc_types, icc_rater_type, icc_rating_type, icc_effect_type, ICC], index=vars
+        [icc_types, icc_rater_type, icc_rating_type, icc_effect_type, icc], index=vars
     ).T
 
     results_table = results_df.to_dict("records")
@@ -397,9 +398,6 @@ def intra_class_correlation(
     #     ],
     #     "ICC": [icc_1_1, icc_2_1, icc_3_1, icc_1_k, icc_2_k, icc_3_k],
     # }
-
-    # idx = stats["Type"].index(icc_type)
-    # icc = stats["ICC"][idx]
 
     icc_dict = [x for x in results_table if icc_type == x["icc_type"]]
     icc = icc_dict[0]["icc"]

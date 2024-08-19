@@ -1,7 +1,6 @@
-"""Tests of the module calculating gold standard and item confidence
+"""Tests of the module calculating gold standard and item confidence.
 
-Usage Example(s):
-
+Examples:
     pytest tests/test_goldstandard.py -k test_evaluator_weighted_estimator
 
 """
@@ -17,7 +16,7 @@ from audpsychometric.core.gold_standard import _confidence_categorical
 
 
 def test_rater_confidence_pearson(df_holzinger_swineford):
-    """Happy Flow test for mode for rater based consistency"""
+    """Happy Flow test for mode for rater based consistency."""
     result = audpsychometric.rater_confidence_pearson(df_holzinger_swineford)
     result_values = np.array([x for x in result.values()])
     # there is a very unrealible rater in this set with .24
@@ -25,7 +24,7 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
 
 
 def test_mode_based_gold_standard():
-    """Happy Flow test for mode based gold standard"""
+    """Happy Flow test for mode based gold standard."""
     df = pd.DataFrame([[4, 9, np.nan]] * 3, columns=["A", "B", "C"])
     df = audpsychometric.gold_standard_mode(df)
     assert isinstance(df, pd.DataFrame)
@@ -196,7 +195,7 @@ def test_mode_based_gold_standard():
     ],
 )
 def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
-    """Happy Flow test for mode based gold standard"""
+    """Happy Flow test for mode based gold standard."""
     pd.testing.assert_frame_equal(
         audpsychometric.gold_standard_mean(df, minimum, maximum, axis=axis),
         df_expected,
@@ -365,7 +364,7 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
     ],
 )
 def test_median_based_gold_standard(df, minimum, maximum, axis, df_expected):
-    """Test that  median gold standard returns df"""
+    """Test that median gold standard returns df."""
     pd.testing.assert_frame_equal(
         audpsychometric.gold_standard_median(df, minimum, maximum, axis=axis),
         df_expected,
@@ -374,7 +373,7 @@ def test_median_based_gold_standard(df, minimum, maximum, axis, df_expected):
 
 @pytest.mark.parametrize("axis", [0, 1])
 def test_evaluator_weighted_estimator(df_holzinger_swineford, axis):
-    """Happy Flow test for mode based gold standard"""
+    """Happy Flow test for mode based gold standard."""
     if axis == 0:
         df_holzinger_swineford = df_holzinger_swineford.T
 
@@ -408,5 +407,5 @@ def test_evaluator_weighted_estimator(df_holzinger_swineford, axis):
 
 @pytest.mark.xfail(raises=ValueError)
 def test_f_categorical(df_holzinger_swineford):
-    """Test that functional raises when no gold column"""
+    """Test that functional raises when no gold column."""
     _ = _confidence_categorical(df_holzinger_swineford)
