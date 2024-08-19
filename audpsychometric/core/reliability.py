@@ -58,9 +58,7 @@ def cronbachs_alpha(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]:
     total_variance = total_score.var(ddof=1)  # var(X)
     alpha = n_items / (n_items - 1) * (1 - variance_sum / total_variance)
 
-    result = {
-        "total_variance": total_variance
-    }
+    result = {"total_variance": total_variance}
     return alpha, result
 
 
@@ -96,9 +94,9 @@ def congeneric_reliability(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]
     return reliability, result
 
 
-def intra_class_correlation(df: pd.DataFrame,
-                            icc_type: str = "ICC_1_1",
-                            anova_method: str = "pingouin") -> typing.Tuple[float, typing.Dict]:
+def intra_class_correlation(
+    df: pd.DataFrame, icc_type: str = "ICC_1_1", anova_method: str = "pingouin"
+) -> typing.Tuple[float, typing.Dict]:
     r"""Intraclass Correlation.
 
     Intraclass correlation calculates rating reliability by relating
@@ -279,14 +277,12 @@ def intra_class_correlation(df: pd.DataFrame,
 
     """  # noqa: E501
 
-    def _anova(df_long: pd.DataFrame,
-               anova_method: str = "pingouin") -> pd.DataFrame:
+    def _anova(df_long: pd.DataFrame, anova_method: str = "pingouin") -> pd.DataFrame:
         """Helper to get the anova table.
 
         Note that pingouin is currently default as statsmodels.
         ols from the statsmodels package is slow under many circumstances
         """
-
         anova_methods = ["statsmodels", "pingouin"]
 
         if anova_method not in anova_methods:
@@ -330,9 +326,9 @@ def intra_class_correlation(df: pd.DataFrame,
     # convert back to wide format to see how many raters dropped:
     data_wide = data_long.pivot_table(index="item", columns="rater", values="rating")
 
-    # delete missings in listwise manner
+    # delete missing data in listwise manner
     nan_count = data_wide.isna().sum().sum()
-    print(f"we have {nan_count} missings")
+    print(f"We have {nan_count} missing data points")
     print("Deleting them!")
     if nan_count > 0:
         data_wide = data_wide.dropna(axis=0, how="any")

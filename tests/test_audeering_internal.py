@@ -14,7 +14,9 @@ import pingouin as pg
 import pytest
 
 import audmetric
+
 import audpsychometric
+
 
 pd.options.display.width = 0
 N_ANSWERS_THRESH = 25
@@ -72,9 +74,7 @@ def generate_coreset_df(coreset_name="set133"):
 
 @pytest.fixture(scope="module", autouse=True)
 def coreset_df() -> pd.DataFrame:
-    """
-
-    Args:
+    """Args:
         None
     Returns:
         pd.DataFrame
@@ -96,9 +96,10 @@ def coreset_df() -> pd.DataFrame:
     The dataset is returned as is and not reshaped to wide.
 
     """
-
     dataset_name = "coreset_133"
-    dataset_path = os.path.join(audpsychometric.datasets.data_directory, f"{dataset_name}.csv")
+    dataset_path = os.path.join(
+        audpsychometric.datasets.data_directory, f"{dataset_name}.csv"
+    )
 
     if os.path.exists(dataset_path):
         print("reading from disk")
@@ -205,8 +206,7 @@ def test_audeering_goldstandard_mode(coreset_df):
 
 
 def test_confidence_values(coreset_df):
-    r"""check that confidences correlate"""
-
+    r"""Check that confidences correlate"""
     df_ewe = audpsychometric.evaluator_weighted_estimator(coreset_df)
     df_mode = audpsychometric.gold_standard_mode(coreset_df)
 

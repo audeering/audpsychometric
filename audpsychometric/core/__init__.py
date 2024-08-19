@@ -1,3 +1,2 @@
-"""
-The core module
+"""The core module
 """

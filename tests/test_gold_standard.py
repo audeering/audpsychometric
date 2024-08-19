@@ -26,13 +26,12 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
 
 def test_mode_based_gold_standard():
     """Happy Flow test for mode based gold standard"""
-
     df = pd.DataFrame([[4, 9, np.nan]] * 3, columns=["A", "B", "C"])
     df = audpsychometric.gold_standard_mode(df)
     assert isinstance(df, pd.DataFrame)
     assert "gold_standard" in df.columns
     assert "confidence" in df.columns
-    assert np.all((df['confidence'] >= 0.) & (df['confidence'] <= 1.).values)
+    assert np.all((df["confidence"] >= 0.0) & (df["confidence"] <= 1.0).values)
 
 
 # The expected confidence value for this test
@@ -45,7 +44,7 @@ def test_mode_based_gold_standard():
 #     return 1 - std_norm
 #
 @pytest.mark.parametrize(
-    'df, minimum, maximum, axis, df_expected',
+    "df, minimum, maximum, axis, df_expected",
     [
         (
             pd.DataFrame([0]),
@@ -53,8 +52,8 @@ def test_mode_based_gold_standard():
             1,
             1,
             pd.DataFrame(
-                [[0., 1.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.0, 1.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -63,8 +62,8 @@ def test_mode_based_gold_standard():
             1,
             1,
             pd.DataFrame(
-                [[0., 1.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.0, 1.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -73,68 +72,68 @@ def test_mode_based_gold_standard():
             1,
             1,
             pd.DataFrame(
-                [[1., 1.]],
-                columns=['gold_standard', 'confidence'],
+                [[1.0, 1.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[.3, .3, .3]]),
+            pd.DataFrame([[0.3, 0.3, 0.3]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.3, 1.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.3, 1.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, 0, .1, .2]]),
+            pd.DataFrame([[0, 0, 0.1, 0.2]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.075, 0.83416876048223]],
-                columns=['gold_standard', 'confidence'],
+                [[0.075, 0.83416876048223]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, 0, .2, .4]]),
+            pd.DataFrame([[0, 0, 0.2, 0.4]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.150, .66833752096446]],
-                columns=['gold_standard', 'confidence'],
+                [[0.150, 0.66833752096446]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, 0, 0, 0, .2, .2, .4, .4]]),
+            pd.DataFrame([[0, 0, 0, 0, 0.2, 0.2, 0.4, 0.4]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.150, .66833752096446]],
-                columns=['gold_standard', 'confidence'],
+                [[0.150, 0.66833752096446]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, .4, .6, 1]]),
+            pd.DataFrame([[0, 0.4, 0.6, 1]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.5, .2788897449072021]],
-                columns=['gold_standard', 'confidence'],
+                [[0.5, 0.2788897449072021]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, .33, .67, 1]]),
+            pd.DataFrame([[0, 0.33, 0.67, 1]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.5, .2531399060064863]],
-                columns=['gold_standard', 'confidence'],
+                [[0.5, 0.2531399060064863]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -143,8 +142,8 @@ def test_mode_based_gold_standard():
             1,
             1,
             pd.DataFrame(
-                [[.5, 0.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.5, 0.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -153,8 +152,8 @@ def test_mode_based_gold_standard():
             1,
             1,
             pd.DataFrame(
-                [[.5, 0.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.5, 0.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -169,11 +168,11 @@ def test_mode_based_gold_standard():
             0,
             pd.DataFrame(
                 [
-                    [2., .8],
-                    [3., .8],
-                    [4., .8],
+                    [2.0, 0.8],
+                    [3.0, 0.8],
+                    [4.0, 0.8],
                 ],
-                columns=['gold_standard', 'confidence'],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -188,13 +187,13 @@ def test_mode_based_gold_standard():
             1,
             pd.DataFrame(
                 [
-                    [2., .8367006838144548],
-                    [4., .8367006838144548],
+                    [2.0, 0.8367006838144548],
+                    [4.0, 0.8367006838144548],
                 ],
-                columns=['gold_standard', 'confidence'],
+                columns=["gold_standard", "confidence"],
             ),
         ),
-    ]
+    ],
 )
 def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
     """Happy Flow test for mode based gold standard"""
@@ -214,7 +213,7 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
 #     return 1 - std_norm
 #
 @pytest.mark.parametrize(
-    'df, minimum, maximum, axis, df_expected',
+    "df, minimum, maximum, axis, df_expected",
     [
         (
             pd.DataFrame([0]),
@@ -222,8 +221,8 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
             1,
             1,
             pd.DataFrame(
-                [[0., 1.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.0, 1.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -232,8 +231,8 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
             1,
             1,
             pd.DataFrame(
-                [[0., 1.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.0, 1.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -242,68 +241,68 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
             1,
             1,
             pd.DataFrame(
-                [[1., 1.]],
-                columns=['gold_standard', 'confidence'],
+                [[1.0, 1.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[.3, .3, .3]]),
+            pd.DataFrame([[0.3, 0.3, 0.3]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.3, 1.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.3, 1.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, 0, .1, .2]]),
+            pd.DataFrame([[0, 0, 0.1, 0.2]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.05, 0.83416876048223]],
-                columns=['gold_standard', 'confidence'],
+                [[0.05, 0.83416876048223]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, 0, .2, .4]]),
+            pd.DataFrame([[0, 0, 0.2, 0.4]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.1, .66833752096446]],
-                columns=['gold_standard', 'confidence'],
+                [[0.1, 0.66833752096446]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, 0, 0, 0, .2, .2, .4, .4]]),
+            pd.DataFrame([[0, 0, 0, 0, 0.2, 0.2, 0.4, 0.4]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.1, .66833752096446]],
-                columns=['gold_standard', 'confidence'],
+                [[0.1, 0.66833752096446]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, .4, .6, 1]]),
+            pd.DataFrame([[0, 0.4, 0.6, 1]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.5, .2788897449072021]],
-                columns=['gold_standard', 'confidence'],
+                [[0.5, 0.2788897449072021]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
-            pd.DataFrame([[0, .33, .67, 1]]),
+            pd.DataFrame([[0, 0.33, 0.67, 1]]),
             0,
             1,
             1,
             pd.DataFrame(
-                [[.5, .2531399060064863]],
-                columns=['gold_standard', 'confidence'],
+                [[0.5, 0.2531399060064863]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -312,8 +311,8 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
             1,
             1,
             pd.DataFrame(
-                [[.5, 0.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.5, 0.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -322,8 +321,8 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
             1,
             1,
             pd.DataFrame(
-                [[.5, 0.]],
-                columns=['gold_standard', 'confidence'],
+                [[0.5, 0.0]],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -338,11 +337,11 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
             0,
             pd.DataFrame(
                 [
-                    [2., .8],
-                    [3., .8],
-                    [4., .8],
+                    [2.0, 0.8],
+                    [3.0, 0.8],
+                    [4.0, 0.8],
                 ],
-                columns=['gold_standard', 'confidence'],
+                columns=["gold_standard", "confidence"],
             ),
         ),
         (
@@ -357,13 +356,13 @@ def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
             1,
             pd.DataFrame(
                 [
-                    [2., .8367006838144548],
-                    [4., .8367006838144548],
+                    [2.0, 0.8367006838144548],
+                    [4.0, 0.8367006838144548],
                 ],
-                columns=['gold_standard', 'confidence'],
+                columns=["gold_standard", "confidence"],
             ),
         ),
-    ]
+    ],
 )
 def test_median_based_gold_standard(df, minimum, maximum, axis, df_expected):
     """Test that  median gold standard returns df"""
@@ -373,7 +372,7 @@ def test_median_based_gold_standard(df, minimum, maximum, axis, df_expected):
     )
 
 
-@pytest.mark.parametrize('axis', [0, 1])
+@pytest.mark.parametrize("axis", [0, 1])
 def test_evaluator_weighted_estimator(df_holzinger_swineford, axis):
     """Happy Flow test for mode based gold standard"""
     if axis == 0:
@@ -409,5 +408,5 @@ def test_evaluator_weighted_estimator(df_holzinger_swineford, axis):
 
 @pytest.mark.xfail(raises=ValueError)
 def test_f_categorical(df_holzinger_swineford):
-    """test that functional raises when no gold column"""
+    """Test that functional raises when no gold column"""
     _ = _confidence_categorical(df_holzinger_swineford)

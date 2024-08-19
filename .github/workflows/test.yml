@@ -13,21 +13,24 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macOS-latest, windows-latest ]
-        python-version: [ 3.8 ]
+        python-version: [ 3.10 ]
         tasks: [ tests ]
         include:
+          - os: ubuntu-latest
+            python-version: 3.8
+            tasks: tests
           - os: ubuntu-latest
             python-version: 3.9
             tasks: tests
           - os: ubuntu-latest
-            python-version: 3.8
+            python-version: 3.10
             tasks: docs
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -45,7 +48,7 @@ jobs:
       if: matrix.tasks == 'tests'
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
