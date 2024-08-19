@@ -1,5 +1,4 @@
-"""Psychometric Functions for Interrater Reliability.
-"""
+"""Psychometric Functions for Interrater Reliability."""
 
 import typing
 
@@ -58,9 +57,7 @@ def cronbachs_alpha(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]:
     total_variance = total_score.var(ddof=1)  # var(X)
     alpha = n_items / (n_items - 1) * (1 - variance_sum / total_variance)
 
-    result = {
-        "total_variance": total_variance
-    }
+    result = {"total_variance": total_variance}
     return alpha, result
 
 
@@ -96,9 +93,9 @@ def congeneric_reliability(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]
     return reliability, result
 
 
-def intra_class_correlation(df: pd.DataFrame,
-                            icc_type: str = "ICC_1_1",
-                            anova_method: str = "pingouin") -> typing.Tuple[float, typing.Dict]:
+def intra_class_correlation(
+    df: pd.DataFrame, icc_type: str = "ICC_1_1", anova_method: str = "pingouin"
+) -> typing.Tuple[float, typing.Dict]:
     r"""Intraclass Correlation.
 
     Intraclass correlation calculates rating reliability by relating
@@ -111,6 +108,8 @@ def intra_class_correlation(df: pd.DataFrame,
     Args:
         df: table in wide format with one rater per column
         icc_type: ICC Method, see description below
+        anova_method: method for ANOVA calculation,
+            can be ``"pingouin"`` or ``"statsmodels"``
 
     Returns:
         icc and additional results lumped into dict
@@ -279,14 +278,12 @@ def intra_class_correlation(df: pd.DataFrame,
 
     """  # noqa: E501
 
-    def _anova(df_long: pd.DataFrame,
-               anova_method: str = "pingouin") -> pd.DataFrame:
+    def _anova(df_long: pd.DataFrame, anova_method: str = "pingouin") -> pd.DataFrame:
         """Helper to get the anova table.
 
         Note that pingouin is currently default as statsmodels.
         ols from the statsmodels package is slow under many circumstances
         """
-
         anova_methods = ["statsmodels", "pingouin"]
 
         if anova_method not in anova_methods:
@@ -330,9 +327,9 @@ def intra_class_correlation(df: pd.DataFrame,
     # convert back to wide format to see how many raters dropped:
     data_wide = data_long.pivot_table(index="item", columns="rater", values="rating")
 
-    # delete missings in listwise manner
+    # delete missing data in listwise manner
     nan_count = data_wide.isna().sum().sum()
-    print(f"we have {nan_count} missings")
+    print(f"We have {nan_count} missing data points")
     print("Deleting them!")
     if nan_count > 0:
         data_wide = data_wide.dropna(axis=0, how="any")
@@ -378,15 +375,15 @@ def intra_class_correlation(df: pd.DataFrame,
     icc_rater_type = 3 * ["single"] + 3 * ["average"]
     icc_rating_type = ["absolute", "consistency", "consistency"] * 2
     icc_effect_type = ["-", "random", "fixed"] * 2
-    ICC = [icc_1_1, icc_2_1, icc_3_1, icc_1_k, icc_2_k, icc_3_k]
+    icc = [icc_1_1, icc_2_1, icc_3_1, icc_1_k, icc_2_k, icc_3_k]
 
     results = pd.DataFrame(
-        [icc_types, icc_rater_type, icc_rating_type, icc_effect_type, ICC]
+        [icc_types, icc_rater_type, icc_rating_type, icc_effect_type, icc]
     ).T
 
     vars = ["icc_type", "rater type", "rating type", "anova effect type", "icc"]
     results_df = pd.DataFrame(
-        [icc_types, icc_rater_type, icc_rating_type, icc_effect_type, ICC], index=vars
+        [icc_types, icc_rater_type, icc_rating_type, icc_effect_type, icc], index=vars
     ).T
 
     results_table = results_df.to_dict("records")
@@ -401,9 +398,6 @@ def intra_class_correlation(df: pd.DataFrame,
     #     ],
     #     "ICC": [icc_1_1, icc_2_1, icc_3_1, icc_1_k, icc_2_k, icc_3_k],
     # }
-
-    # idx = stats["Type"].index(icc_type)
-    # icc = stats["ICC"][idx]
 
     icc_dict = [x for x in results_table if icc_type == x["icc_type"]]
     icc = icc_dict[0]["icc"]

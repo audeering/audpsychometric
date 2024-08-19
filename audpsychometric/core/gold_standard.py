@@ -1,4 +1,4 @@
-"""Methods for calculating gold standards over individual raters' judgments"""
+r"""Calculating gold standards over individual raters' judgments."""
 
 
 import numpy as np
@@ -8,11 +8,11 @@ import audmetric
 
 
 def gold_standard_mean(
-        df: pd.DataFrame,
-        minimum: float,
-        maximum: float,
-        *,
-        axis: int = 1,
+    df: pd.DataFrame,
+    minimum: float,
+    maximum: float,
+    *,
+    axis: int = 1,
 ) -> pd.DataFrame:
     r"""Calculate the gold standard as the mean of raters' votes.
 
@@ -39,16 +39,16 @@ def gold_standard_mean(
     )
     gold_standard = df.mean(axis=axis)
     df_result = pd.concat([gold_standard, confidences], axis=1)
-    df_result.columns = ['gold_standard', 'confidence']
+    df_result.columns = ["gold_standard", "confidence"]
     return df_result
 
 
 def gold_standard_median(
-        df: pd.DataFrame,
-        minimum: float,
-        maximum: float,
-        *,
-        axis: int = 1,
+    df: pd.DataFrame,
+    minimum: float,
+    maximum: float,
+    *,
+    axis: int = 1,
 ) -> pd.DataFrame:
     r"""Calculate the gold standard as the median of raters' votes.
 
@@ -73,14 +73,14 @@ def gold_standard_median(
     )
     gold_standard = df.median(axis=axis)
     df_result = pd.concat([gold_standard, confidences], axis=1)
-    df_result.columns = ['gold_standard', 'confidence']
+    df_result.columns = ["gold_standard", "confidence"]
     return df_result
 
 
 def gold_standard_mode(
-        df: pd.DataFrame,
-        *,
-        axis: int = 1,
+    df: pd.DataFrame,
+    *,
+    axis: int = 1,
 ) -> pd.DataFrame:
     r"""Calculate the gold standard as the median of raters' votes.
 
@@ -96,7 +96,6 @@ def gold_standard_mode(
         table containing `gold_standard` and `confidence` columns
 
     """
-
     gold_standard = np.floor(df.mode(axis=axis).mean(axis=axis) + 0.5)
     df["gold"] = gold_standard
 
@@ -152,7 +151,7 @@ def evaluator_weighted_estimator(
     raters = df.columns.tolist()
 
     def ewe(row):
-        """functional to determine ewe per row"""
+        """Functional to determine ewe per row."""
         total = sum([row[x] * confidences[x] for x in raters])
         total /= np.sum([confidences[x] for x in raters])
         return total
@@ -182,7 +181,6 @@ def _confidence_categorical(row: pd.Series) -> float:
         categorical confidence score
 
     """
-
     columns = row.index.tolist()
 
     if "gold" not in columns:
@@ -193,11 +191,11 @@ def _confidence_categorical(row: pd.Series) -> float:
 
 
 def _confidence_numerical(
-        row: pd.Series,
-        minimum: float,
-        maximum: float,
+    row: pd.Series,
+    minimum: float,
+    maximum: float,
 ) -> float:
-    """Functional to calculate confidence score row-wise - numerical.
+    r"""Functional to calculate confidence score row-wise - numerical.
 
     .. math::
        confidence_\text{row} = max(0, 1 - std(row) / cutoff_max)
@@ -216,13 +214,13 @@ def _confidence_numerical(
     """
     raters = row.index.tolist()
     cutoff_max = maximum - 1 / 2 * (minimum + maximum)
-    return max([0., 1 - row[raters].std(ddof=0) / cutoff_max])
+    return max([0.0, 1 - row[raters].std(ddof=0) / cutoff_max])
 
 
 def rater_confidence_pearson(
-        df: pd.DataFrame,
-        *,
-        axis: int = 1,
+    df: pd.DataFrame,
+    *,
+    axis: int = 1,
 ) -> dict:
     """Calculate the rater confidence.
 
@@ -247,7 +245,6 @@ def rater_confidence_pearson(
         dict with the rater confidences
 
     """
-
     if axis == 0:
         df = df.T
 

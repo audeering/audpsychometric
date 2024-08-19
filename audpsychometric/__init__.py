@@ -16,24 +16,19 @@ and are under responsibility of the user.
 
 """
 import audpsychometric.core
-import audpsychometric.core.reliability
 from audpsychometric.core import datasets
-from audpsychometric.core.gold_standard import (
-    evaluator_weighted_estimator,
-    rater_confidence_pearson,
-    gold_standard_mean,
-    gold_standard_median,
-    gold_standard_mode,
-)
-from audpsychometric.core.reliability import (
-    congeneric_reliability,
-    cronbachs_alpha,
-    intra_class_correlation
-)
+from audpsychometric.core.datasets import list_datasets
+from audpsychometric.core.datasets import read_dataset
+from audpsychometric.core.gold_standard import evaluator_weighted_estimator
+from audpsychometric.core.gold_standard import gold_standard_mean
+from audpsychometric.core.gold_standard import gold_standard_median
+from audpsychometric.core.gold_standard import gold_standard_mode
+from audpsychometric.core.gold_standard import rater_confidence_pearson
+import audpsychometric.core.reliability
+from audpsychometric.core.reliability import congeneric_reliability
+from audpsychometric.core.reliability import cronbachs_alpha
+from audpsychometric.core.reliability import intra_class_correlation
 
-from audpsychometric.core.datasets import (
-    list_datasets,
-    read_dataset)
 
 # Disencourage from audpsychometric import *
 __all__ = []
