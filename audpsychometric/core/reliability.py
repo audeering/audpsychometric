@@ -348,12 +348,12 @@ def intra_class_correlation(df: pd.DataFrame,
 
     anova_table = _anova(data_long, anova_method=anova_method)
 
-    bms = anova_table["mean_sq"][0]
-    wms = (anova_table["sum_sq"][1] + anova_table["sum_sq"][2]) / (
-        anova_table["df"][1] + anova_table["df"][2]
+    bms = anova_table["mean_sq"].iloc[0]
+    wms = (anova_table["sum_sq"].iloc[1] + anova_table["sum_sq"].iloc[2]) / (
+        anova_table["df"].iloc[1] + anova_table["df"].iloc[2]
     )
-    jms = anova_table["mean_sq"][1]
-    ems = anova_table["mean_sq"][2]
+    jms = anova_table["mean_sq"].iloc[1]
+    ems = anova_table["mean_sq"].iloc[2]
 
     k = data_long["rater"].nunique()
     n = data_long["item"].nunique()
