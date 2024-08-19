@@ -32,7 +32,7 @@ def test_mode_based_gold_standard():
     assert isinstance(df, pd.DataFrame)
     assert "gold_standard" in df.columns
     assert "confidence" in df.columns
-    assert np.alltrue((df['confidence'] >= 0.) & (df['confidence'] <= 1.).values)
+    assert np.all((df['confidence'] >= 0.) & (df['confidence'] <= 1.).values)
 
 
 # The expected confidence value for this test
