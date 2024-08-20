@@ -17,7 +17,13 @@ title = "Documentation"
 master_doc = "index"
 extensions = []
 source_suffix = ".rst"
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "**.ipynb_checkpoints"]
+exclude_patterns = [
+    "api-src",
+    "build",
+    "Thumbs.db",
+    ".DS_Store",
+    "**.ipynb_checkpoints",
+]
 pygments_style = None
 extensions = [
     "jupyter_sphinx",  # executing code blocks
@@ -28,6 +34,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",  # for "copy to clipboard" buttons
     "sphinxcontrib.bibtex",
+    "sphinx_apipages",
 ]
 
 

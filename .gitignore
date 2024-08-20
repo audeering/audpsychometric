@@ -6,6 +6,7 @@ dist/
 .idea/
 venv/
 coverage.xml
+docs/api/
 docs/pics/*.svg
 docs/.ipynb_checkpoints
 docs/examples/output

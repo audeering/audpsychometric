@@ -3,8 +3,32 @@ audpsychometric
 
 .. automodule:: audpsychometric
 
+Library to facilitate evaluation and processing of annotated speech.
+
+The input data format for all functions in this module is the same:
+a :class:`pd.DataFrame` is expected.
+
+This dataframe is assumed to
+
+- have an index that identifies the unit of observation,
+  e.g. a psychometric item to be rated
+- have a separate column for each rater
+
+So the entry in the frame at (irow, icol)
+identifies the rating of unit irow by rather icol.
+Note that these assumptions are not checked
+and are under responsibility of the user.
+
 Pychometric Analysis
 --------------------
+
+.. autosummary::
+    :toctree:
+    :nosignatures:
+
+    cronbachs_alpha
+    congeneric_reliability
+    intra_class_correlation
 
 The module currently contains two reliability coefficients
 from the family of structural equation model (SEM)-based
@@ -38,53 +62,30 @@ We do not implement it here,
 as there are other implementations available,
 e.g. :func:`audmetric.concordance_cc`.
 
-cronbachs_alpha
-^^^^^^^^^^^^^^^
-
-.. autofunction:: cronbachs_alpha
-
-congeneric_reliability
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: congeneric_reliability
-
-intra_class_correlation
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: intra_class_correlation
-
 
 Gold Standard Calculation
 -------------------------
 
-evaluator_weighted_estimator
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autosummary::
+    :toctree:
+    :nosignatures:
 
-.. autofunction:: evaluator_weighted_estimator
-
-gold_standard_mean
-^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: gold_standard_mean
-
-gold_standard_median
-^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: gold_standard_median
-
-gold_standard_mode
-^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: gold_standard_mode
-
-rater_confidence_pearson
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autofunction:: rater_confidence_pearson
+    evaluator_weighted_estimator
+    gold_standard_mean
+    gold_standard_median
+    gold_standard_mode
+    rater_confidence_pearson
 
 
 Demo Datasets
 -------------
+
+.. autosummary::
+    :toctree:
+    :nosignatures:
+
+    list_datasets
+    read_dataset
 
 Currently these datasets are defined:
 
@@ -93,16 +94,6 @@ Currently these datasets are defined:
     from audpsychometric import datasets
     df_datasets = datasets.list_datasets()
     print(df_datasets)
-
-list_datasets
-^^^^^^^^^^^^^
-
-.. autofunction:: list_datasets
-
-read_dataset
-^^^^^^^^^^^^
-
-.. autofunction:: read_dataset
 
 
 .. _one-dimensional congeneric reliability: https://en.wikipedia.org/wiki/Congeneric_reliability
