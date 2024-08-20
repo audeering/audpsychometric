@@ -1,122 +1,79 @@
-r"""Calculating gold standards over individual raters' judgments."""
-
+import typing
 
 import numpy as np
-import pandas as pd
+import numpy.typing as npt
 
 import audmetric
 
 
-def gold_standard_mean(
-    df: pd.DataFrame,
-    minimum: float,
-    maximum: float,
+def mean(
+    ratings: npt.ArrayLike,
     *,
     axis: int = 1,
-) -> pd.DataFrame:
-    r"""Calculate the gold standard as the mean of raters' votes.
-
-    This functional uses the numerical confidence calculation.
-
-    The returned table
-    has an index identical to the input :class:`pd.DataFrame`,
-    and additional columns `gold_standard` and `confidence`.
+) -> typing.Union[float, np.ndarray]:
+    r"""Mean of raters' votes.
 
     Args:
-        df: DataFrame in wide format, one rater per column
-        minimum: minimum for cut off calculation in confidence
-        maximum: maximum for cut off calculation in confidence
+        ratings: ratings
+        axis: axis to calculate mean.
+            A value of ``1`` expects raters to be columns
+
+    Returns:
+        mean over raters
+
+    """
+    ratings = np.array(ratings)
+    return _float_or_array(ratings.mean(axis=axis))
+
+
+def median(
+    ratings: npt.ArrayLike,
+    *,
+    axis: int = 1,
+) -> typing.Union[float, np.ndarray]:
+    r"""Median of raters' votes.
+
+    Args:
+        ratings: ratings
         axis: axis to calculate mean and confidences.
             A value of ``1`` expects raters to be columns
 
     Returns:
-        table containing `gold_standard` and `confidence` columns
+        median over raters
 
     """
-    confidences = df.apply(
-        lambda x: _confidence_numerical(x, minimum, maximum),
-        axis=axis,
-    )
-    gold_standard = df.mean(axis=axis)
-    df_result = pd.concat([gold_standard, confidences], axis=1)
-    df_result.columns = ["gold_standard", "confidence"]
-    return df_result
+    ratings = np.array(ratings)
+    return _float_or_array(ratings.median(axis=axis))
 
 
-def gold_standard_median(
-    df: pd.DataFrame,
-    minimum: float,
-    maximum: float,
+def mode(
+    ratings: npt.ArrayLike,
     *,
     axis: int = 1,
-) -> pd.DataFrame:
-    r"""Calculate the gold standard as the median of raters' votes.
-
-    The returned table
-    has an index identical to the input :class:`pd.DataFrame`,
-    and additional columns `gold_standard` and `confidence`.
+) -> typing.Union[float, np.ndarray]:
+    r"""Mode of raters' votes.
 
     Args:
-        df: DataFrame in wide format, one rater per column
-        minimum: minimum for cut off calculation in confidence
-        maximum: maximum for cut off calculation in confidence
-        axis: axis to calculate mean and confidences.
+        ratings: ratings
+        axis: axis to calculate mode.
             A value of ``1`` expects raters to be columns
 
     Returns:
-        table containing `gold_standard` and `confidence` columns
+        mode over raters
 
     """
-    confidences = df.apply(
-        lambda x: _confidence_numerical(x, minimum, maximum),
-        axis=axis,
-    )
-    gold_standard = df.median(axis=axis)
-    df_result = pd.concat([gold_standard, confidences], axis=1)
-    df_result.columns = ["gold_standard", "confidence"]
-    return df_result
-
-
-def gold_standard_mode(
-    df: pd.DataFrame,
-    *,
-    axis: int = 1,
-) -> pd.DataFrame:
-    r"""Calculate the gold standard as the median of raters' votes.
-
-    The returned table has an index identical to the input df,
-    and additional columns `gold_standard` and `confidence`.
-
-    Args:
-        df: DataFrame in wide format, one rater per column
-        axis: axis to calculate mean and confidences.
-            A value of ``1`` expects raters to be columns
-
-    Returns:
-        table containing `gold_standard` and `confidence` columns
-
-    """
-    gold_standard = np.floor(df.mode(axis=axis).mean(axis=axis) + 0.5)
-    df["gold"] = gold_standard
-
-    # calculate confidence value as the fraction
-    # of raters hitting the gold standard
-    confidences = df.apply(_confidence_categorical, axis=axis)
-    df_result = pd.DataFrame([gold_standard, confidences], columns=df.index).T
-    df_result.columns = ["gold_standard", "confidence"]
-    return df_result
+    ratings = np.array(ratings)
+    return _float_or_array(np.floor(_mode(ratings, axis=axis).mean(axis=axis) + 0.5))
 
 
 def evaluator_weighted_estimator(
-    df: pd.DataFrame,
-    minimum: float,
-    maximum: float,
+    ratings: npt.ArrayLike,
     *,
     axis: int = 1,
-) -> pd.DataFrame:
-    r"""Calculate EWE (evaluator weighted estimator).
+) -> typing.Union[float, np.ndarray]:
+    r"""Evaluator weighted estimator (EWE) of raters' votes.
 
-    This measure of gold standard calculation is described in
+    The EWE is described in
     :cite:`coutinho-etal-2016-assessing` as follows:
 
     The EWE average of the individual ratings considers
@@ -132,47 +89,44 @@ def evaluator_weighted_estimator(
     .. _audformat#102: https://github.com/audeering/audformat/issues/102
 
     Args:
-        df: DataFrame in wide format, one rater per column
-        minimum: minimum for cut off calculation in confidence
-        maximum: maximum for cut off calculation in confidence
-        axis: axis to calculate mean and confidences.
+        ratings: ratings
+        axis: axis to calculate EWE.
             A value of ``1`` expects raters to be columns
 
 
     Returns:
-        table containing `gold_standard` and `confidence` columns
+        EWE over raters
 
     """
-    confidences = rater_confidence_pearson(df, axis=axis)
+    ratings = np.array(ratings)
+    confidences = rater_confidence_pearson(ratings, axis=axis)
 
-    if axis == 0:
-        df = df.T
+    # if axis == 0:
+    #     df = df.T
 
-    raters = df.columns.tolist()
+    # raters = df.columns.tolist()
 
-    def ewe(row):
-        """Functional to determine ewe per row."""
-        total = sum([row[x] * confidences[x] for x in raters])
-        total /= np.sum([confidences[x] for x in raters])
-        return total
+    # def ewe(row):
+    #     """Functional to determine ewe per row."""
+    #     total = sum([row[x] * confidences[x] for x in raters])
+    #     total /= np.sum([confidences[x] for x in raters])
+    #     return total
 
-    df_result = pd.DataFrame(
-        data=df.apply(ewe, axis=1), index=df.index, columns=["EWE"]
+    # y = df.apply(ewe, axis=1)
+    # y.name = "EWE"
+
+    return _float_or_array(
+        np.sum(ratings * confidences, axis=axis) / np.sum(confidences)
     )
 
-    df_result["confidence"] = df.apply(
-        lambda x: _confidence_numerical(x, minimum, maximum),
-        axis=1,
-    )
 
-    return df_result
-
-
-def _confidence_categorical(row: pd.Series) -> float:
-    r"""Functional to calculate confidence score row-wise - categorical.
+def confidence_categorical(ratings: npt.ArrayLike) -> float:
+    r"""Confidence score for categorical ratings.
 
     The confidence for categorical data the fraction of raters per item
     with the rating being equal to that of the gold standard
+
+    TODO: add equation
 
     Args:
         row: one row of the table containing raters' values
@@ -181,82 +135,135 @@ def _confidence_categorical(row: pd.Series) -> float:
         categorical confidence score
 
     """
-    columns = row.index.tolist()
-
-    if "gold" not in columns:
-        raise ValueError("Gold column not in DataFrame!")
-
-    raters = [column for column in columns if column != "gold"]
-    return np.sum(row[raters] == row["gold"]) / row[raters].count()
+    ratings = np.array(ratings).squeeze()
+    gold_standard = gold_standard_mode(ratings)
+    number_of_nonzero_ratings = np.count_nonzero(~np.isnan(ratings))
+    return np.sum(ratings == gold_standard) / number_of_nonzero_ratings
 
 
-def _confidence_numerical(
-    row: pd.Series,
+def confidence_numerical(
+    ratings: npt.ArrayLike,
     minimum: float,
     maximum: float,
-) -> float:
-    r"""Functional to calculate confidence score row-wise - numerical.
+    *,
+    axis: int = 1,
+) -> typing.Union[float, np.ndarray]:
+    r"""Confidence score for numerical ratings.
 
     .. math::
-       confidence_\text{row} = max(0, 1 - std(row) / cutoff_max)
+        \text{confidence}(\text{ratings}) =
+        \max(
+        0, 1 - \frac{\text{std}(\text{ratings})}
+        {\text{maximum} - \frac{1}{2} (\text{minimum} + \text{maximum})}
+        )
 
-    where
-        - std is the standard deviation of the data
+    with :math:`\text{std}` the standard deviation of the ratings
 
     Args:
-        row: one row of the table containing raters' values
-        minimum: minimum value of the data to calculate cut off
-        maximum: maximum value of the data to calculate cut off
+        ratings: ratings for a given stimuli
+        minimum: minimum value of the ratings to calculate cut off
+        maximum: maximum value of the ratings to calculate cut off
+        axis: axis to calculate confidence
 
     Returns:
-        numerical confidence score
+        numerical confidence score(s)
 
     """
-    raters = row.index.tolist()
+    ratings = np.array(ratings)
     cutoff_max = maximum - 1 / 2 * (minimum + maximum)
-    return max([0.0, 1 - row[raters].std(ddof=0) / cutoff_max])
+    print(f"{1 - ratings.std(ddof=0, axis=axis)=}")
+    std = ratings.std(ddof=0, axis=axis)
+    return _float_or_array(
+        # np.max([0.0, 1 - ratings.std(ddof=0, axis=axis) / cutoff_max])
+        np.max([np.zeros(std.shape), np.ones(std.shape) - std / cutoff_max])
+    )
 
 
 def rater_confidence_pearson(
-    df: pd.DataFrame,
+    ratings: npt.ArrayLike,
     *,
     axis: int = 1,
-) -> dict:
+) -> np.ndarray:
     """Calculate the rater confidence.
 
-    Calculate the rater confidence
-    of a rater as the correlation of a rater
+    Calculate the confidence of a rater
+    as the correlation of a rater
     with the mean score of all other raters.
 
     This should not be confused with the value
     that relates to a rated stimulus.
 
-    The dictionary returned contains the rater names
-    (as in df.columns)
-    as keys
-    and the corresponding resulting correlation as value.
-
     Args:
-        df: table in wide format
+        ratings: matrix of ratings of each rater.
+            Has to contain more than one rater
         axis: axis to calculate mean and confidences.
             A value of ``1`` expects raters to be columns
 
     Returns:
-        dict with the rater confidences
+        rater confidences
 
     """
+    ratings = np.array(ratings)
+
+    # Ensure columns represents different raters
     if axis == 0:
-        df = df.T
+        ratings = ratings.T
+    elif axis > 1:
+        raise ValueError(f"axis has to be 0 or 1, not {axis}.")
 
-    raters = df.columns.tolist()
+    # Remove examples,
+    # which miss at least one rater
+    ratings = ratings[:, ~np.isnan(ratings).any(axis=0)]
 
-    confidences = {}
-    for rater in raters:
-        df_rater = df[rater].dropna().astype(float)
-        df_others = df.drop(rater, axis=1).mean(axis=1).dropna()
-        indices = df_rater.index.intersection(df_others.index)
-        confidences[rater] = audmetric.pearson_cc(
-            df_rater.loc[indices],
-            df_others.loc[indices],
+    confidences = []
+    for n in range(ratings.shape[1]):
+        ratings_selected_rater = ratings[:, n]
+        average_ratings_other_raters = np.delete(ratings, n, axis=1).mean(axis=0)
+        print(f"{ratings_selected_rater.shape=}")
+        print(f"{average_ratings_other_raters.shape=}")
+        confidences.append(
+            audmetric.pearson_cc(ratings_selected_rater, average_ratings_other_raters)
         )
-    return confidences
+    return np.array(confidences)
+
+
+def _float_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
+    r"""Convert single valued arrays as float.
+
+    Squeeze array,
+    and convert to single float value,
+    if it contains only a single entry.
+
+    Args:
+        values: input array
+
+    Returns:
+        converted array / float
+
+    """
+    values = values.squeeze()
+    if values.shape == (1,):
+        values = float(values)
+    return values
+
+
+def _mode(ratings: np.ndarray, *, axis: int = 1) -> typing.Union[float, np.ndarray]:
+    r"""Mode of ratings.
+
+    Implements :meth:`pandas.DataFrame.mode` with :mod:`numpy`.
+
+    Args:
+        ratings: ratings
+        axis: axis along to calculate the mode
+
+    Returns:
+        mode of ratings
+
+    """
+    values, counts = np.unique(ratings, return_counts=True, axis=axis)
+    idx = np.argmax(counts)
+    if len(values.shape) > 1 and axis == 1:
+        values = np.array([column[index] for column in values])
+    else:
+        values = values[index]
+    return _float_or_array(values)

@@ -70,10 +70,12 @@ Gold Standard Calculation
     :toctree:
     :nosignatures:
 
+    confidence_categorical
+    confidence_numerical
     evaluator_weighted_estimator
-    gold_standard_mean
-    gold_standard_median
-    gold_standard_mode
+    mean
+    median
+    mode
     rater_confidence_pearson
 
 

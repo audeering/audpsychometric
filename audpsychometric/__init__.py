@@ -2,10 +2,12 @@ import audpsychometric.core
 from audpsychometric.core import datasets
 from audpsychometric.core.datasets import list_datasets
 from audpsychometric.core.datasets import read_dataset
+from audpsychometric.core.gold_standard import confidence_categorical
+from audpsychometric.core.gold_standard import confidence_numerical
 from audpsychometric.core.gold_standard import evaluator_weighted_estimator
-from audpsychometric.core.gold_standard import gold_standard_mean
-from audpsychometric.core.gold_standard import gold_standard_median
-from audpsychometric.core.gold_standard import gold_standard_mode
+from audpsychometric.core.gold_standard import mean
+from audpsychometric.core.gold_standard import median
+from audpsychometric.core.gold_standard import mode
 from audpsychometric.core.gold_standard import rater_confidence_pearson
 import audpsychometric.core.reliability
 from audpsychometric.core.reliability import congeneric_reliability
