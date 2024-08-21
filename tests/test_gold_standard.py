@@ -35,8 +35,42 @@ def to_list_array_frame_series(
     return tuple(outputs)
 
 
-def test_confidence_categorical():
-    pass
+@pytest.mark.parametrize(
+    "ratings, axis, expected",
+    [
+        # axis = 0
+        ([0], 0, 1.0),
+        (["a"], 0, 1.0),
+        ([0, 0], 0, np.array([1.0, 1.0])),
+        ([[0, 0]], 0, np.array([1.0, 1.0])),
+        ([[0], [0]], 0, 1.0),
+        # axis = 1
+        ([0], 1, 1.0),
+        (["a"], 1, 1.0),
+        ([0, 0], 1, 1.0),
+        ([[0, 0]], 1, 1.0),
+        ([[0], [0]], 1, np.array([1.0, 1.0])),
+    ],
+)
+def test_confidence_categorical(ratings, axis, expected):
+    """Test confidence for categorical ratings.
+
+    If only a vector is given for ``ratings``,
+    it should be treated as column vector.
+    An value of 0 for ``axis``
+    should compute the confidence scores along rows.
+
+    Args:
+        ratings: ratings as list
+        axis: axis along to compute confidence
+        expected: expected confidence score(s)
+
+    """
+    for x in to_list_array_frame_series(ratings):
+        np.testing.assert_equal(
+            audpsychometric.confidence_categorical(x, axis=axis),
+            expected,
+        )
 
 
 # The expected confidence value for this test
@@ -139,6 +173,10 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
         ([0, 0], 0, np.array([0, 0])),
         ([[0, 0]], 0, np.array([0, 0])),
         ([[0], [0]], 0, 0),
+        (["a"], 0, "a"),
+        (["a", "a"], 0, np.array(["a", "a"])),
+        ([["a", "a"]], 0, np.array(["a", "a"])),
+        ([["a"], ["a"]], 0, "a"),
         # axis = 1
         ([0], 1, 0),
         ([0, 0], 1, 0),
@@ -152,7 +190,7 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
         ([[1, 1]], 1, 1),
     ],
 )
-def test_mode_numerical(ratings, axis, expected):
+def test_mode(ratings, axis, expected):
     """Test mode over ratings.
 
     Args:
@@ -163,7 +201,7 @@ def test_mode_numerical(ratings, axis, expected):
     """
     for x in to_list_array_frame_series(ratings):
         np.testing.assert_equal(
-            audpsychometric.mode_numerical(x, axis=axis),
+            audpsychometric.mode(x, axis=axis),
             expected,
         )
 

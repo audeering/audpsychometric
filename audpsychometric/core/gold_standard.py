@@ -6,7 +6,11 @@ import numpy.typing as npt
 import audmetric
 
 
-def confidence_categorical(ratings: npt.ArrayLike) -> float:
+def confidence_categorical(
+    ratings: npt.ArrayLike,
+    *,
+    axis: int = 1,
+) -> typing.Union[float, np.ndarray]:
     r"""Confidence score for categorical ratings.
 
     The confidence for categorical data the fraction of raters per item
@@ -16,15 +20,25 @@ def confidence_categorical(ratings: npt.ArrayLike) -> float:
 
     Args:
         ratings: one row of the table containing raters' values
+        axis: axis along which the confidences are computed.
+            A value of ``1``
+            assumes stimuli as rows
+            and raters as columns
 
     Returns:
         categorical confidence score
 
     """
-    ratings = np.array(ratings).squeeze()
-    gold_standard = mode_numerical(ratings)
-    number_of_nonzero_ratings = np.count_nonzero(~np.isnan(ratings))
-    return np.sum(ratings == gold_standard) / number_of_nonzero_ratings
+    ratings = np.atleast_2d(np.array(ratings))
+
+    def _confidence(x):
+        try:
+            num_samples = np.count_nonzero(~np.isnan(x))
+        except TypeError:
+            num_samples = len(x)
+        return np.sum(x == _mode(x)) / num_samples
+
+    return _value_or_array(np.apply_along_axis(_confidence, axis, ratings))
 
 
 def confidence_numerical(
@@ -60,11 +74,10 @@ def confidence_numerical(
         numerical confidence score(s)
 
     """
-    # Ensure 2D with vector as row vector
     ratings = np.atleast_2d(np.array(ratings))
     cutoff_max = maximum - 1 / 2 * (minimum + maximum)
     std = ratings.std(ddof=0, axis=axis)
-    return _float_or_array(
+    return _value_or_array(
         np.max([np.zeros(std.shape), np.ones(std.shape) - std / cutoff_max])
     )
 
@@ -107,15 +120,15 @@ def evaluator_weighted_estimator(
     # Ensure columns represents different raters
     if axis == 0:
         ratings = ratings.T
-    return _float_or_array(np.inner(ratings, confidences) / np.sum(confidences))
+    return _value_or_array(np.inner(ratings, confidences) / np.sum(confidences))
 
 
-def mode_numerical(
+def mode(
     ratings: npt.ArrayLike,
     *,
     axis: int = 1,
 ) -> typing.Union[float, np.ndarray]:
-    r"""Mode of for numerical ratings.
+    r"""Mode of categorical ratings.
 
     Args:
         ratings: ratings
@@ -129,16 +142,7 @@ def mode_numerical(
 
     """
     ratings = np.atleast_2d(np.array(ratings))
-
-    def _mode(x):
-        values, counts = np.unique(x, return_counts=True)
-        # Find indices with maximum count
-        idx = np.flatnonzero(counts == np.max(counts))
-        # Take average over values with same count
-        # and round to next integer
-        return int(np.floor(np.mean(values[idx]) + 0.5))
-
-    return _float_or_array(np.apply_along_axis(_mode, axis, ratings))
+    return _value_or_array(np.apply_along_axis(_mode, axis, ratings))
 
 
 def rater_confidence_pearson(
@@ -191,21 +195,45 @@ def rater_confidence_pearson(
     return np.array(confidences)
 
 
-def _float_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
-    r"""Convert single valued arrays as float.
+def _value_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
+    r"""Convert single valued arrays to value.
 
     Squeeze array,
-    and convert to single float value,
+    and convert to single value,
     if it contains only a single entry.
 
     Args:
         values: input array
 
     Returns:
-        converted array / float
+        converted array / object
 
     """
     values = values.squeeze()
     if values.ndim == 0 or values.shape == (1,):
-        values = float(values)
+        values = values.item()
     return values
+
+
+def _mode(values: np.ndarray) -> typing.Any:
+    """Mode of categorical values.
+
+    Args:
+        values: 1-dimensional values
+
+    Returns:
+        mode
+
+    """
+    values, counts = np.unique(values, return_counts=True)
+    # Find indices with maximum count
+    idx = np.flatnonzero(counts == np.max(counts))
+    try:
+        # Take average over values with same count
+        # and round to next integer
+        average = int(np.floor(np.mean(values[idx]) + 0.5))
+    except (TypeError, np.core._exceptions.UFuncTypeError):
+        # If we cannot take the mean,
+        # take the first occurrence
+        average = values[idx[0]]
+    return average
