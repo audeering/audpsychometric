@@ -6,46 +6,6 @@ import numpy.typing as npt
 import audmetric
 
 
-def mean(
-    ratings: npt.ArrayLike,
-    *,
-    axis: int = 1,
-) -> typing.Union[float, np.ndarray]:
-    r"""Mean of raters' votes.
-
-    Args:
-        ratings: ratings
-        axis: axis to calculate mean.
-            A value of ``1`` expects raters to be columns
-
-    Returns:
-        mean over raters
-
-    """
-    ratings = np.array(ratings)
-    return _float_or_array(ratings.mean(axis=axis))
-
-
-def median(
-    ratings: npt.ArrayLike,
-    *,
-    axis: int = 1,
-) -> typing.Union[float, np.ndarray]:
-    r"""Median of raters' votes.
-
-    Args:
-        ratings: ratings
-        axis: axis to calculate mean and confidences.
-            A value of ``1`` expects raters to be columns
-
-    Returns:
-        median over raters
-
-    """
-    ratings = np.array(ratings)
-    return _float_or_array(ratings.median(axis=axis))
-
-
 def mode(
     ratings: npt.ArrayLike,
     *,
@@ -63,6 +23,7 @@ def mode(
 
     """
     ratings = np.array(ratings)
+    # TODO: check with df.mode() and add equation
     return _float_or_array(np.floor(_mode(ratings, axis=axis).mean(axis=axis) + 0.5))
 
 

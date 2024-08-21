@@ -73,8 +73,6 @@ Gold Standard Calculation
     confidence_categorical
     confidence_numerical
     evaluator_weighted_estimator
-    mean
-    median
     mode
     rater_confidence_pearson
 
