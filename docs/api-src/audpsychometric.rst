@@ -73,7 +73,7 @@ Gold Standard Calculation
     confidence_categorical
     confidence_numerical
     evaluator_weighted_estimator
-    mode
+    mode_numerical
     rater_confidence_pearson
 
 

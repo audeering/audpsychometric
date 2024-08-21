@@ -6,25 +6,67 @@ import numpy.typing as npt
 import audmetric
 
 
-def mode(
+def confidence_categorical(ratings: npt.ArrayLike) -> float:
+    r"""Confidence score for categorical ratings.
+
+    The confidence for categorical data the fraction of raters per item
+    with the rating being equal to that of the gold standard
+
+    TODO: add equation
+
+    Args:
+        ratings: one row of the table containing raters' values
+
+    Returns:
+        categorical confidence score
+
+    """
+    ratings = np.array(ratings).squeeze()
+    gold_standard = mode_numerical(ratings)
+    number_of_nonzero_ratings = np.count_nonzero(~np.isnan(ratings))
+    return np.sum(ratings == gold_standard) / number_of_nonzero_ratings
+
+
+def confidence_numerical(
     ratings: npt.ArrayLike,
+    minimum: float,
+    maximum: float,
     *,
     axis: int = 1,
 ) -> typing.Union[float, np.ndarray]:
-    r"""Mode of raters' votes.
+    r"""Confidence score for numerical ratings.
+
+    .. math::
+        \text{confidence}(\text{ratings}) =
+        \max(
+        0, 1 - \frac{\text{std}(\text{ratings})}
+        {\text{maximum} - \frac{1}{2} (\text{minimum} + \text{maximum})}
+        )
+
+    with :math:`\text{std}` the standard deviation of the ratings.
 
     Args:
-        ratings: ratings
-        axis: axis to calculate mode.
-            A value of ``1`` expects raters to be columns
+        ratings: ratings,
+            whereas a one dimensional ratings
+            are treated as a row vector
+        minimum: lower limit of possible rating value
+        maximum: upper limit of possible rating value
+        axis: axis along which the confidences are computed.
+            A value of ``1``
+            assumes stimuli as rows
+            and raters as columns
 
     Returns:
-        mode over raters
+        numerical confidence score(s)
 
     """
-    ratings = np.array(ratings)
-    # TODO: check with df.mode() and add equation
-    return _float_or_array(np.floor(_mode(ratings, axis=axis).mean(axis=axis) + 0.5))
+    # Ensure 2D with vector as row vector
+    ratings = np.atleast_2d(np.array(ratings))
+    cutoff_max = maximum - 1 / 2 * (minimum + maximum)
+    std = ratings.std(ddof=0, axis=axis)
+    return _float_or_array(
+        np.max([np.zeros(std.shape), np.ones(std.shape) - std / cutoff_max])
+    )
 
 
 def evaluator_weighted_estimator(
@@ -51,9 +93,10 @@ def evaluator_weighted_estimator(
 
     Args:
         ratings: ratings
-        axis: axis to calculate EWE.
-            A value of ``1`` expects raters to be columns
-
+        axis: axis along which the EWE is computed.
+            A value of ``1``
+            assumes stimuli as rows
+            and raters as columns
 
     Returns:
         EWE over raters
@@ -81,63 +124,37 @@ def evaluator_weighted_estimator(
     )
 
 
-def confidence_categorical(ratings: npt.ArrayLike) -> float:
-    r"""Confidence score for categorical ratings.
-
-    The confidence for categorical data the fraction of raters per item
-    with the rating being equal to that of the gold standard
-
-    TODO: add equation
-
-    Args:
-        row: one row of the table containing raters' values
-
-    Returns:
-        categorical confidence score
-
-    """
-    ratings = np.array(ratings).squeeze()
-    gold_standard = gold_standard_mode(ratings)
-    number_of_nonzero_ratings = np.count_nonzero(~np.isnan(ratings))
-    return np.sum(ratings == gold_standard) / number_of_nonzero_ratings
-
-
-def confidence_numerical(
+def mode_numerical(
     ratings: npt.ArrayLike,
-    minimum: float,
-    maximum: float,
     *,
     axis: int = 1,
 ) -> typing.Union[float, np.ndarray]:
-    r"""Confidence score for numerical ratings.
-
-    .. math::
-        \text{confidence}(\text{ratings}) =
-        \max(
-        0, 1 - \frac{\text{std}(\text{ratings})}
-        {\text{maximum} - \frac{1}{2} (\text{minimum} + \text{maximum})}
-        )
-
-    with :math:`\text{std}` the standard deviation of the ratings
+    r"""Mode of for numerical ratings.
 
     Args:
-        ratings: ratings for a given stimuli
-        minimum: minimum value of the ratings to calculate cut off
-        maximum: maximum value of the ratings to calculate cut off
-        axis: axis to calculate confidence
+        ratings: ratings
+        axis: axis along which the mode is computed.
+            A value of ``1``
+            assumes stimuli as rows
+            and raters as columns
 
     Returns:
-        numerical confidence score(s)
+        mode over raters
 
     """
-    ratings = np.array(ratings)
-    cutoff_max = maximum - 1 / 2 * (minimum + maximum)
-    print(f"{1 - ratings.std(ddof=0, axis=axis)=}")
-    std = ratings.std(ddof=0, axis=axis)
-    return _float_or_array(
-        # np.max([0.0, 1 - ratings.std(ddof=0, axis=axis) / cutoff_max])
-        np.max([np.zeros(std.shape), np.ones(std.shape) - std / cutoff_max])
-    )
+    ratings = np.atleast_2d(np.array(ratings))
+
+    def _mode(x):
+        values, counts = np.unique(x, return_counts=True)
+        # Find indices with maximum count
+        idx = np.flatnonzero(counts == np.max(counts))
+        # Take average over values with same count
+        # and round to next integer
+        return int(np.floor(np.mean(values[idx]) + 0.5))
+
+    print(f"{ratings=}")
+    print(f"{np.apply_along_axis(_mode, axis, ratings)=}")
+    return _float_or_array(np.apply_along_axis(_mode, axis, ratings))
 
 
 def rater_confidence_pearson(
@@ -145,14 +162,15 @@ def rater_confidence_pearson(
     *,
     axis: int = 1,
 ) -> np.ndarray:
-    """Calculate the rater confidence.
+    """Calculate rater confidences.
 
     Calculate the confidence of a rater
-    as the correlation of a rater
+    by the correlation of a rater
     with the mean score of all other raters.
 
-    This should not be confused with the value
-    that relates to a rated stimulus.
+    This should not be confused with the confidence value
+    that relates to a rated stimulus,
+    e.g. :func:`audspychometric.confidence_numerical`.
 
     Args:
         ratings: matrix of ratings of each rater.
@@ -172,16 +190,17 @@ def rater_confidence_pearson(
     elif axis > 1:
         raise ValueError(f"axis has to be 0 or 1, not {axis}.")
 
-    # Remove examples,
-    # which miss at least one rater
+    # Remove stimuli (rows),
+    # which miss ratings for one rater or more
     ratings = ratings[:, ~np.isnan(ratings).any(axis=0)]
 
+    # Calculate confidence as Pearson Correlation Coefficient
+    # between the raters' ratings
+    # and the average ratings of all other raters
     confidences = []
     for n in range(ratings.shape[1]):
         ratings_selected_rater = ratings[:, n]
-        average_ratings_other_raters = np.delete(ratings, n, axis=1).mean(axis=0)
-        print(f"{ratings_selected_rater.shape=}")
-        print(f"{average_ratings_other_raters.shape=}")
+        average_ratings_other_raters = np.delete(ratings, n, axis=1).mean(axis=1)
         confidences.append(
             audmetric.pearson_cc(ratings_selected_rater, average_ratings_other_raters)
         )
@@ -203,28 +222,6 @@ def _float_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
 
     """
     values = values.squeeze()
-    if values.shape == (1,):
+    if values.ndim == 0 or values.shape == (1,):
         values = float(values)
     return values
-
-
-def _mode(ratings: np.ndarray, *, axis: int = 1) -> typing.Union[float, np.ndarray]:
-    r"""Mode of ratings.
-
-    Implements :meth:`pandas.DataFrame.mode` with :mod:`numpy`.
-
-    Args:
-        ratings: ratings
-        axis: axis along to calculate the mode
-
-    Returns:
-        mode of ratings
-
-    """
-    values, counts = np.unique(ratings, return_counts=True, axis=axis)
-    idx = np.argmax(counts)
-    if len(values.shape) > 1 and axis == 1:
-        values = np.array([column[index] for column in values])
-    else:
-        values = values[index]
-    return _float_or_array(values)
