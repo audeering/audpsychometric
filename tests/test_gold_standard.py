@@ -135,10 +135,18 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
     "ratings, axis, expected",
     [
         # axis = 0
+        ([0], 0, 0),
+        ([0, 0], 0, np.array([0, 0])),
         ([[0, 0]], 0, np.array([0, 0])),
+        ([[0], [0]], 0, 0),
         # axis = 1
         ([0], 1, 0),
         ([0, 0], 1, 0),
+        ([0, 1], 1, 1),
+        ([0, 0, 1], 1, 0),
+        ([0, 1, 2], 1, 1),
+        ([0, 1, 1], 1, 1),
+        ([0, 2], 1, 1),
         ([[0, 0]], 1, 0),
         ([[0], [0]], 1, np.array([0, 0])),
         ([[1, 1]], 1, 1),
@@ -173,8 +181,6 @@ def test_evaluator_weighted_estimator(df_holzinger_swineford, axis):
         df_holzinger_swineford,
         axis=axis,
     )
-    print(f"{ewe.shape=}")
-    print(f"{df_holzinger_swineford.values.shape=}")
     if axis == 0:
         expected = df_holzinger_swineford.values.shape[1]
     elif axis == 1:
