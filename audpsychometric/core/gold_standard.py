@@ -104,24 +104,10 @@ def evaluator_weighted_estimator(
     """
     ratings = np.array(ratings)
     confidences = rater_confidence_pearson(ratings, axis=axis)
-
-    # if axis == 0:
-    #     df = df.T
-
-    # raters = df.columns.tolist()
-
-    # def ewe(row):
-    #     """Functional to determine ewe per row."""
-    #     total = sum([row[x] * confidences[x] for x in raters])
-    #     total /= np.sum([confidences[x] for x in raters])
-    #     return total
-
-    # y = df.apply(ewe, axis=1)
-    # y.name = "EWE"
-
-    return _float_or_array(
-        np.sum(ratings * confidences, axis=axis) / np.sum(confidences)
-    )
+    # Ensure columns represents different raters
+    if axis == 0:
+        ratings = ratings.T
+    return _float_or_array(np.inner(ratings, confidences) / np.sum(confidences))
 
 
 def mode_numerical(
@@ -152,8 +138,6 @@ def mode_numerical(
         # and round to next integer
         return int(np.floor(np.mean(values[idx]) + 0.5))
 
-    print(f"{ratings=}")
-    print(f"{np.apply_along_axis(_mode, axis, ratings)=}")
     return _float_or_array(np.apply_along_axis(_mode, axis, ratings))
 
 
@@ -173,10 +157,12 @@ def rater_confidence_pearson(
     e.g. :func:`audspychometric.confidence_numerical`.
 
     Args:
-        ratings: matrix of ratings of each rater.
+        ratings: ratings of each rater.
             Has to contain more than one rater
-        axis: axis to calculate mean and confidences.
-            A value of ``1`` expects raters to be columns
+        axis: axis along which the rater confidence is computed.
+            A value of ``1``
+            assumes stimuli as rows
+            and raters as columns
 
     Returns:
         rater confidences
@@ -187,8 +173,6 @@ def rater_confidence_pearson(
     # Ensure columns represents different raters
     if axis == 0:
         ratings = ratings.T
-    elif axis > 1:
-        raise ValueError(f"axis has to be 0 or 1, not {axis}.")
 
     # Remove stimuli (rows),
     # which miss ratings for one rater or more
