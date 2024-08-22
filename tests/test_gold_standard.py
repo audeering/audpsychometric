@@ -50,15 +50,18 @@ def to_list_array_frame_series(
         ([0, 0], 1, 1.0),
         ([[0, 0]], 1, 1.0),
         ([[0], [0]], 1, np.array([1.0, 1.0])),
+        ([0, 0, 1], 1, 2 / 3),
+        ([0, 0, 1, 1], 1, 0.5),
+        (["a", "a", "b"], 1, 2 / 3),
+        (["a", "a", "b", "b"], 1, 0.5),
+        ([0, 1, 2], 1, 1 / 3),
+        ([0, 1, 2, 2], 1, 0.5),
+        (["a", "b", "c"], 1, 1 / 3),
+        (["a", "b", "c", "c"], 1, 0.5),
     ],
 )
 def test_confidence_categorical(ratings, axis, expected):
     """Test confidence for categorical ratings.
-
-    If only a vector is given for ``ratings``,
-    it should be treated as column vector.
-    An value of 0 for ``axis``
-    should compute the confidence scores along rows.
 
     Args:
         ratings: ratings as list
