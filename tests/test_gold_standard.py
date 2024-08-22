@@ -185,6 +185,7 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
         (["a", "a"], 0, np.array(["a", "a"])),
         ([["a", "a"]], 0, np.array(["a", "a"])),
         ([["a"], ["a"]], 0, "a"),
+        ([[np.nan, 1], [2, np.nan]], 0, np.array([1, 2])),
         # axis = 1
         ([0], 1, 0),
         ([0, 0], 1, 0),
@@ -212,6 +213,7 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
         ([["a", "a"]], 1, "a"),
         ([["a"], ["a"]], 1, np.array(["a", "a"])),
         ([np.nan, np.nan, 1], 1, 1),
+        ([[np.nan, 1], [2, np.nan]], 1, np.array([1, 2])),
     ],
 )
 def test_mode(ratings, axis, expected):
