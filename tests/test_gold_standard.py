@@ -188,10 +188,26 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
         ([[0, 0]], 1, 0),
         ([[0], [0]], 1, np.array([0, 0])),
         ([[1, 1]], 1, 1),
+        (["a"], 1, "a"),
+        (["a", "a"], 1, "a"),
+        (["a", "b"], 1, "a"),
+        (["b", "a"], 1, "b"),
+        (["a", "a", "b"], 1, "a"),
+        (["b", "a", "a"], 1, "a"),
+        (["a", "b", "c"], 1, "a"),
+        ([["a", "a"]], 1, "a"),
+        ([["a"], ["a"]], 1, np.array(["a", "a"])),
     ],
 )
 def test_mode(ratings, axis, expected):
     """Test mode over ratings.
+
+    If the categories are integers,
+    and there is no winner,
+    mode should return the average of all winners.
+    For other categories,
+    the first item should be returned
+    of the winning categories.
 
     Args:
         ratings: ratings as list

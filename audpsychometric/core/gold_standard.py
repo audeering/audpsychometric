@@ -215,25 +215,26 @@ def _value_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
     return values
 
 
-def _mode(values: np.ndarray) -> typing.Any:
+def _mode(x: np.ndarray) -> typing.Any:
     """Mode of categorical values.
 
     Args:
-        values: 1-dimensional values
+        x: 1-dimensional values
 
     Returns:
         mode
 
     """
-    values, counts = np.unique(values, return_counts=True)
+    values, counts = np.unique(x, return_counts=True)
     # Find indices with maximum count
     idx = np.flatnonzero(counts == np.max(counts))
     try:
         # Take average over values with same count
         # and round to next integer
-        average = int(np.floor(np.mean(values[idx]) + 0.5))
-    except (TypeError, np.core._exceptions.UFuncTypeError):
+        mode = int(np.floor(np.mean(values[idx]) + 0.5))
+    except (TypeError, np._core._exceptions.UFuncTypeError):
         # If we cannot take the mean,
         # take the first occurrence
-        average = values[idx[0]]
-    return average
+        first_occurence = np.min([np.where(x == value) for value in values[idx]])
+        mode = x[first_occurence]
+    return mode

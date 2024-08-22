@@ -35,7 +35,7 @@ dependencies = [
     'audeer >=1.10.0',
     'audmetric',
     'pingouin',
-    'numpy',
+    'numpy >=1.21',  # for consistent NaN behavior in mode()
     'pandas',
     'scikit-learn',
     'statsmodels',
