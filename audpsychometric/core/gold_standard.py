@@ -33,7 +33,7 @@ def confidence_categorical(
     ratings = np.atleast_2d(np.array(ratings))
 
     def _confidence(x):
-        x = [val for val in x if not pd.isnull(val)]
+        x = _remove_empty(x)
         return np.sum(x == _mode(x)) / len(x)
 
     return _value_or_array(np.apply_along_axis(_confidence, axis, ratings))
@@ -139,8 +139,10 @@ def mode(
         mode over raters
 
     """
-    ratings = _remove_empty(np.atleast_2d(np.array(ratings)))
-    return _value_or_array(np.apply_along_axis(_mode, axis, ratings))
+    ratings = np.atleast_2d(np.array(ratings))
+    return _value_or_array(
+        np.apply_along_axis(lambda x: _mode(x, remove_nan=True), axis, ratings)
+    )
 
 
 def rater_confidence_pearson(
@@ -213,19 +215,20 @@ def _value_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
     return values
 
 
-def _mode(x: np.ndarray) -> typing.Any:
+def _mode(x: np.ndarray, *, remove_nan=False) -> typing.Any:
     """Mode of categorical values.
 
     Args:
         x: 1-dimensional values
+        remove_nan: if ``True`` remove ``None`` and ``nan`` from ``x``
 
     Returns:
         mode
 
     """
+    if remove_nan:
+        x = _remove_empty(x)
     values, counts = np.unique(x, return_counts=True)
-    print(f"{values=}")
-    print(f"{counts=}")
     # Find indices with maximum count
     idx = np.flatnonzero(counts == np.max(counts))
     try:
@@ -244,10 +247,10 @@ def _remove_empty(ratings: np.ndarray) -> np.ndarray:
     r"""Remove empty ratings.
 
     Args:
-        ratings: 2-dimensional array
+        ratings: 1-dimensional array
 
     Returns:
         ratings without ``None`` and ``nan`` entries
 
     """
-    return np.array([[x for x in row if not pd.isnull(x)] for row in ratings])
+    return np.array([rating for rating in ratings if not pd.isnull(rating)])
