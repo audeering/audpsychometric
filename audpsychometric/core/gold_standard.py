@@ -232,7 +232,7 @@ def _mode(x: np.ndarray) -> typing.Any:
         # Take average over values with same count
         # and round to next integer
         mode = int(np.floor(np.mean(values[idx]) + 0.5))
-    except (TypeError, np._core._exceptions.UFuncTypeError):
+    except TypeError:
         # If we cannot take the mean,
         # take the first occurrence
         first_occurence = np.min([np.where(x == value) for value in values[idx]])
