@@ -2,6 +2,7 @@ import typing
 
 import numpy as np
 import numpy.typing as npt
+import pandas as pd
 
 import audmetric
 
@@ -32,11 +33,8 @@ def confidence_categorical(
     ratings = np.atleast_2d(np.array(ratings))
 
     def _confidence(x):
-        try:
-            num_samples = np.count_nonzero(~np.isnan(x))
-        except TypeError:
-            num_samples = len(x)
-        return np.sum(x == _mode(x)) / num_samples
+        x = [val for val in x if not pd.isnull(val)]
+        return np.sum(x == _mode(x)) / len(x)
 
     return _value_or_array(np.apply_along_axis(_confidence, axis, ratings))
 
@@ -141,7 +139,7 @@ def mode(
         mode over raters
 
     """
-    ratings = np.atleast_2d(np.array(ratings))
+    ratings = _remove_empty(np.atleast_2d(np.array(ratings)))
     return _value_or_array(np.apply_along_axis(_mode, axis, ratings))
 
 
@@ -226,6 +224,8 @@ def _mode(x: np.ndarray) -> typing.Any:
 
     """
     values, counts = np.unique(x, return_counts=True)
+    print(f"{values=}")
+    print(f"{counts=}")
     # Find indices with maximum count
     idx = np.flatnonzero(counts == np.max(counts))
     try:
@@ -238,3 +238,16 @@ def _mode(x: np.ndarray) -> typing.Any:
         first_occurence = np.min([np.where(x == value) for value in values[idx]])
         mode = x[first_occurence]
     return mode
+
+
+def _remove_empty(ratings: np.ndarray) -> np.ndarray:
+    r"""Remove empty ratings.
+
+    Args:
+        ratings: 2-dimensional array
+
+    Returns:
+        ratings without ``None`` and ``nan`` entries
+
+    """
+    return np.array([[x for x in row if not pd.isnull(x)] for row in ratings])
