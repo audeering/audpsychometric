@@ -14,10 +14,10 @@ def confidence_categorical(
 ) -> typing.Union[float, np.ndarray]:
     r"""Confidence score for categorical ratings.
 
-    The confidence for categorical data the fraction of raters per item
+    The confidence for categorical data
+    is given by the fraction of raters per item
     with the rating being equal to that of the gold standard
-
-    TODO: add equation
+    as given by :func:`audpsychometric.mode`.
 
     Args:
         ratings: one row of the table containing raters' values
@@ -215,20 +215,20 @@ def _value_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
     return values
 
 
-def _mode(x: np.ndarray, *, remove_nan=False) -> typing.Any:
+def _mode(ratings: np.ndarray, *, remove_nan=False) -> typing.Any:
     """Mode of categorical values.
 
     Args:
-        x: 1-dimensional values
-        remove_nan: if ``True`` remove ``None`` and ``nan`` from ``x``
+        ratings: 1-dimensional array
+        remove_nan: if ``True`` remove ``None`` and ``nan`` from ``ratings``
 
     Returns:
         mode
 
     """
     if remove_nan:
-        x = _remove_empty(x)
-    values, counts = np.unique(x, return_counts=True)
+        ratings = _remove_empty(ratings)
+    values, counts = np.unique(ratings, return_counts=True)
     # Find indices with maximum count
     idx = np.flatnonzero(counts == np.max(counts))
     try:
@@ -238,8 +238,8 @@ def _mode(x: np.ndarray, *, remove_nan=False) -> typing.Any:
     except TypeError:
         # If we cannot take the mean,
         # take the first occurrence
-        first_occurence = np.min([np.where(x == value) for value in values[idx]])
-        mode = x[first_occurence]
+        first_occurence = np.min([np.where(ratings == value) for value in values[idx]])
+        mode = ratings[first_occurence]
     return mode
 
 
