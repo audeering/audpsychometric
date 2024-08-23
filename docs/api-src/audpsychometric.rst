@@ -5,20 +5,6 @@ audpsychometric
 
 Library to facilitate evaluation and processing of annotated speech.
 
-The input data format for all functions in this module is the same:
-a :class:`pd.DataFrame` is expected.
-
-This dataframe is assumed to
-
-- have an index that identifies the unit of observation,
-  e.g. a psychometric item to be rated
-- have a separate column for each rater
-
-So the entry in the frame at (irow, icol)
-identifies the rating of unit irow by rather icol.
-Note that these assumptions are not checked
-and are under responsibility of the user.
-
 Pychometric Analysis
 --------------------
 
