@@ -155,6 +155,11 @@ def mode(
     r"""Mode of categorical ratings.
 
     ``None`` and ``nan`` values are ignored per item.
+    If the values are numerical
+    and there are several winning categories,
+    the average over those is returned.
+    If the values are not numerical,
+    the first occurring value is returned.
 
     Args:
         ratings: ratings.
