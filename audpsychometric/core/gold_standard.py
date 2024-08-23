@@ -18,9 +18,12 @@ def confidence_categorical(
     is given by the fraction of raters per item
     with the rating being equal to that of the gold standard
     as given by :func:`audpsychometric.mode`.
+    ``None`` and ``nan`` values are ignored per item.
 
     Args:
-        ratings: one row of the table containing raters' values
+        ratings: ratings.
+            When given as a 1-dimensional array,
+            it is treated as a row vector
         axis: axis along which the confidences are computed.
             A value of ``1``
             assumes stimuli as rows
@@ -28,6 +31,14 @@ def confidence_categorical(
 
     Returns:
         categorical confidence score
+
+    Examples:
+        >>> confidence_categorical([0, 1])
+        0.5
+        >>> confidence_categorical(["a", "b"])
+        0.5
+        >>> confidence_categorical([1, 1, np.nan])
+        1.0
 
     """
     ratings = np.atleast_2d(np.array(ratings))
@@ -58,9 +69,9 @@ def confidence_numerical(
     with :math:`\text{std}` the standard deviation of the ratings.
 
     Args:
-        ratings: ratings,
-            whereas a one dimensional ratings
-            are treated as a row vector
+        ratings: ratings.
+            When given as a 1-dimensional array,
+            it is treated as a row vector
         minimum: lower limit of possible rating value
         maximum: upper limit of possible rating value
         axis: axis along which the confidences are computed.
@@ -103,7 +114,9 @@ def evaluator_weighted_estimator(
     .. _audformat#102: https://github.com/audeering/audformat/issues/102
 
     Args:
-        ratings: ratings
+        ratings: ratings.
+            When given as a 1-dimensional array,
+            it is treated as a row vector
         axis: axis along which the EWE is computed.
             A value of ``1``
             assumes stimuli as rows
@@ -128,8 +141,12 @@ def mode(
 ) -> typing.Union[float, np.ndarray]:
     r"""Mode of categorical ratings.
 
+    ``None`` and ``nan`` values are ignored per item.
+
     Args:
-        ratings: ratings
+        ratings: ratings.
+            When given as a 1-dimensional array,
+            it is treated as a row vector
         axis: axis along which the mode is computed.
             A value of ``1``
             assumes stimuli as rows
@@ -161,8 +178,10 @@ def rater_confidence_pearson(
     e.g. :func:`audspychometric.confidence_numerical`.
 
     Args:
-        ratings: ratings of each rater.
+        ratings: ratings.
             Has to contain more than one rater
+            When given as a 1-dimensional array,
+            it is treated as a row vector
         axis: axis along which the rater confidence is computed.
             A value of ``1``
             assumes stimuli as rows
