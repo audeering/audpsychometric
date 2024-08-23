@@ -157,7 +157,8 @@ def mode(
     ``None`` and ``nan`` values are ignored per item.
     If the values are numerical
     and there are several winning categories,
-    the average over those is returned.
+    the average over those is returned,
+    and rounded to the next higher integer.
     If the values are not numerical,
     the first occurring value is returned.
 
@@ -178,6 +179,10 @@ def mode(
         0
         >>> mode(["a", "a", "b"])
         'a'
+        >>> mode([0, 1])
+        1
+        >>> mode(["a", "b"])
+        "a"
         >>> mode([0, 2])
         1
         >>> mode(["a", "c"])
