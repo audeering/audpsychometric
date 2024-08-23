@@ -2,11 +2,11 @@ import audpsychometric.core
 from audpsychometric.core import datasets
 from audpsychometric.core.datasets import list_datasets
 from audpsychometric.core.datasets import read_dataset
-from audpsychometric.core.gold_standard import confidence_categorical
-from audpsychometric.core.gold_standard import confidence_numerical
+from audpsychometric.core.gold_standard import agreement_categorical
+from audpsychometric.core.gold_standard import agreement_numerical
 from audpsychometric.core.gold_standard import evaluator_weighted_estimator
 from audpsychometric.core.gold_standard import mode
-from audpsychometric.core.gold_standard import rater_confidence_pearson
+from audpsychometric.core.gold_standard import rater_agreement_pearson
 import audpsychometric.core.reliability
 from audpsychometric.core.reliability import congeneric_reliability
 from audpsychometric.core.reliability import cronbachs_alpha

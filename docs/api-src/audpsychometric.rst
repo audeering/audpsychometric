@@ -56,11 +56,11 @@ Gold Standard Calculation
     :toctree:
     :nosignatures:
 
-    confidence_categorical
-    confidence_numerical
+    agreement_categorical
+    agreement_numerical
     evaluator_weighted_estimator
     mode
-    rater_confidence_pearson
+    rater_agreement_pearson
 
 
 Demo Datasets

@@ -6,14 +6,14 @@ import pandas as pd
 import audmetric
 
 
-def confidence_categorical(
+def agreement_categorical(
     ratings: typing.Sequence,
     *,
     axis: int = 1,
 ) -> typing.Union[float, np.ndarray]:
     r"""Confidence score for categorical ratings.
 
-    The confidence for categorical data
+    The agreement for categorical data
     is given by the fraction of raters per item
     with the rating being equal to that of the gold standard
     as given by :func:`audpsychometric.mode`.
@@ -23,33 +23,33 @@ def confidence_categorical(
         ratings: ratings.
             When given as a 1-dimensional array,
             it is treated as a row vector
-        axis: axis along which the confidences are computed.
+        axis: axis along which the agreement is computed.
             A value of ``1``
             assumes stimuli as rows
             and raters as columns
 
     Returns:
-        categorical confidence score
+        categorical agreement score(s)
 
     Examples:
-        >>> confidence_categorical([0, 1])
+        >>> agreement_categorical([0, 1])
         0.5
-        >>> confidence_categorical(["a", "b"])
+        >>> agreement_categorical(["a", "b"])
         0.5
-        >>> confidence_categorical([1, 1, np.nan])
+        >>> agreement_categorical([1, 1, np.nan])
         1.0
 
     """
     ratings = np.atleast_2d(np.array(ratings))
 
-    def _confidence(x):
+    def _agreement(x):
         x = _remove_empty(x)
         return np.sum(x == _mode(x)) / len(x)
 
-    return _value_or_array(np.apply_along_axis(_confidence, axis, ratings))
+    return _value_or_array(np.apply_along_axis(_agreement, axis, ratings))
 
 
-def confidence_numerical(
+def agreement_numerical(
     ratings: typing.Sequence,
     minimum: float,
     maximum: float,
@@ -59,7 +59,7 @@ def confidence_numerical(
     r"""Confidence score for numerical ratings.
 
     .. math::
-        \text{confidence}(\text{ratings}) =
+        \text{agreement}(\text{ratings}) =
         \max(
         0, 1 - \frac{\text{std}(\text{ratings})}
         {\text{maximum} - \frac{1}{2} (\text{minimum} + \text{maximum})}
@@ -73,22 +73,22 @@ def confidence_numerical(
             it is treated as a row vector
         minimum: lower limit of possible rating value
         maximum: upper limit of possible rating value
-        axis: axis along which the confidences are computed.
+        axis: axis along which the agreement is computed.
             A value of ``1``
             assumes stimuli as rows
             and raters as columns
 
     Returns:
-        numerical confidence score(s)
+        numerical agreement score(s)
 
     Examples:
-        >>> confidence_numerical([0, 1], 0, 1)
+        >>> agreement_numerical([0, 1], 0, 1)
         0.0
-        >>> confidence_numerical([0, 1], 0, 2)
+        >>> agreement_numerical([0, 1], 0, 2)
         0.5
-        >>> confidence_numerical([0, 0], 0, 1)
+        >>> agreement_numerical([0, 0], 0, 1)
         1.0
-        >>> confidence_numerical([0, np.nan], 0, 1)
+        >>> agreement_numerical([0, np.nan], 0, 1)
         nan
 
     """
@@ -140,11 +140,11 @@ def evaluator_weighted_estimator(
 
     """
     ratings = np.array(ratings)
-    confidences = rater_confidence_pearson(ratings, axis=axis)
+    agreements = rater_agreement_pearson(ratings, axis=axis)
     # Ensure columns represents different raters
     if axis == 0:
         ratings = ratings.T
-    return _value_or_array(np.inner(ratings, confidences) / np.sum(confidences))
+    return _value_or_array(np.inner(ratings, agreements) / np.sum(agreements))
 
 
 def mode(
@@ -197,37 +197,37 @@ def mode(
     )
 
 
-def rater_confidence_pearson(
+def rater_agreement_pearson(
     ratings: typing.Sequence,
     *,
     axis: int = 1,
 ) -> np.ndarray:
-    """Calculate rater confidences.
+    """Calculate rater agreements.
 
-    Calculate the confidence of a rater
+    Calculate the agreement of a rater
     by the correlation of a rater
     with the mean score of all other raters.
 
-    This should not be confused with the confidence value
+    This should not be confused with the agreement value
     that relates to a rated stimulus,
-    e.g. :func:`audspychometric.confidence_numerical`.
+    e.g. :func:`audspychometric.agreement_numerical`.
 
     Args:
         ratings: ratings.
             Has to contain more than one rater
             and more than one stimuli
-        axis: axis along which the rater confidence is computed.
+        axis: axis along which the rater agreement is computed.
             A value of ``1``
             assumes stimuli as rows
             and raters as columns
 
     Returns:
-        rater confidences
+        rater agreements
 
     Examples:
-        >>> rater_confidence_pearson([[1, 1, 0], [2, 2, 1]])
+        >>> rater_agreement_pearson([[1, 1, 0], [2, 2, 1]])
         array([1., 1., 1.])
-        >>> rater_confidence_pearson([[1, 1, 0], [2, 2, 1], [2, 2, 2]])
+        >>> rater_agreement_pearson([[1, 1, 0], [2, 2, 1], [2, 2, 2]])
         array([0.94491118, 0.94491118, 0.8660254 ])
 
     """
@@ -241,17 +241,17 @@ def rater_confidence_pearson(
     # which miss ratings for one rater or more
     ratings = ratings[:, ~np.isnan(ratings).any(axis=0)]
 
-    # Calculate confidence as Pearson Correlation Coefficient
+    # Calculate agreement as Pearson Correlation Coefficient
     # between the raters' ratings
     # and the average ratings of all other raters
-    confidences = []
+    agreements = []
     for n in range(ratings.shape[1]):
         ratings_selected_rater = ratings[:, n]
         average_ratings_other_raters = np.delete(ratings, n, axis=1).mean(axis=1)
-        confidences.append(
+        agreements.append(
             audmetric.pearson_cc(ratings_selected_rater, average_ratings_other_raters)
         )
-    return np.array(confidences)
+    return np.array(agreements)
 
 
 def _value_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:

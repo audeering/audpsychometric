@@ -66,26 +66,26 @@ def to_list_array_frame_series(
         ([None, np.nan, 1], 1, 1.0),
     ],
 )
-def test_confidence_categorical(ratings, axis, expected):
-    """Test confidence for categorical ratings.
+def test_agreement_categorical(ratings, axis, expected):
+    """Test agreement for categorical ratings.
 
     Args:
         ratings: ratings as list
-        axis: axis along to compute confidence
-        expected: expected confidence score(s)
+        axis: axis along to compute agreement
+        expected: expected agreement score(s)
 
     """
     for x in to_list_array_frame_series(ratings):
         np.testing.assert_equal(
-            audpsychometric.confidence_categorical(x, axis=axis),
+            audpsychometric.agreement_categorical(x, axis=axis),
             expected,
         )
 
 
-# The expected confidence value for this test
+# The expected agreement value for this test
 # can be calculated by:
 #
-# def confidence(rating, minimum, maximum):
+# def agreement(rating, minimum, maximum):
 #     max_std = (maximum - minimum) / 2
 #     std = np.std(rating)
 #     std_norm = np.clip(std/max_std, 0, 1)
@@ -130,31 +130,31 @@ def test_confidence_categorical(ratings, axis, expected):
         ),
     ],
 )
-def test_confidence_numerical(ratings, minimum, maximum, axis, expected):
-    """Test confidence for numerical ratings.
+def test_agreement_numerical(ratings, minimum, maximum, axis, expected):
+    """Test agreement for numerical ratings.
 
     If only a vector is given for ``ratings``,
     it should be treated as column vector.
     An value of 0 for ``axis``
-    should compute the confidence scores along rows.
+    should compute the agreement scores along rows.
 
     Args:
         ratings: ratings as list
         minimum: lower limit of ratings
         maximum: upper limit of ratings
-        axis: axis along to compute confidence
-        expected: expected confidence score(s)
+        axis: axis along to compute agreement
+        expected: expected agreement score(s)
 
     """
     for x in to_list_array_frame_series(ratings):
         np.testing.assert_equal(
-            audpsychometric.confidence_numerical(x, minimum, maximum, axis=axis),
+            audpsychometric.agreement_numerical(x, minimum, maximum, axis=axis),
             expected,
         )
 
 
-def test_rater_confidence_pearson(df_holzinger_swineford):
-    """Test rater confidence."""
+def test_rater_agreement_pearson(df_holzinger_swineford):
+    """Test rater agreement."""
     # there is a very unrealible rater in this set with .24
     expected = np.array(
         [
@@ -170,7 +170,7 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
         ],
     )
     np.testing.assert_allclose(
-        audpsychometric.rater_confidence_pearson(df_holzinger_swineford),
+        audpsychometric.rater_agreement_pearson(df_holzinger_swineford),
         expected,
     )
 
