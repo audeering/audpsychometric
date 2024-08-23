@@ -44,7 +44,7 @@ def to_list_array_frame_series(
         ([0, 0], 0, np.array([1.0, 1.0])),
         ([[0, 0]], 0, np.array([1.0, 1.0])),
         ([[0], [0]], 0, 1.0),
-        # ([[None], ["a"]], 0, 1.0),
+        ([[None], ["a"]], 0, 1.0),
         # axis = 1
         ([0], 1, 1.0),
         (["a"], 1, 1.0),
@@ -59,10 +59,11 @@ def to_list_array_frame_series(
         ([0, 1, 2, 2], 1, 0.5),
         (["a", "b", "c"], 1, 1 / 3),
         (["a", "b", "c", "c"], 1, 0.5),
-        # ([np.nan, 1, 1], 1, 1.0),
-        # ([np.nan, 0, 1], 1, 0.5),
-        # ([None, "a", "a"], 1, 1.0),
-        # ([None, "a", "b"], 1, 0.5),
+        ([np.nan, 1, 1], 1, 1.0),
+        ([np.nan, 0, 1], 1, 0.5),
+        ([None, "a", "a"], 1, 1.0),
+        ([None, "a", "b"], 1, 0.5),
+        ([None, np.nan, 1], 1, 1.0),
     ],
 )
 def test_confidence_categorical(ratings, axis, expected):
@@ -213,6 +214,7 @@ def test_rater_confidence_pearson(df_holzinger_swineford):
         ([["a", "a"]], 1, "a"),
         ([["a"], ["a"]], 1, np.array(["a", "a"])),
         ([np.nan, np.nan, 1], 1, 1),
+        ([np.nan, np.nan, None, None, 1], 1, 1),
         ([[np.nan, 1], [2, np.nan]], 1, np.array([1, 2])),
     ],
 )
