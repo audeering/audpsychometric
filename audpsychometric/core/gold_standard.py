@@ -65,7 +65,7 @@ def confidence_numerical(
         {\text{maximum} - \frac{1}{2} (\text{minimum} + \text{maximum})}
         )
 
-    with :math:`\text{std}` the standard deviation of the ratings.
+    with :math:`\text{std}` the population standard deviation of the ratings.
 
     Args:
         ratings: ratings.
