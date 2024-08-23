@@ -82,6 +82,16 @@ def confidence_numerical(
     Returns:
         numerical confidence score(s)
 
+    Examples:
+        >>> confidence_numerical([0, 1], 0, 1)
+        0.0
+        >>> confidence_numerical([0, 1], 0, 2)
+        0.5
+        >>> confidence_numerical([0, 0], 0, 1)
+        1.0
+        >>> confidence_numerical([0, np.nan], 0, 1)
+        nan
+
     """
     ratings = np.atleast_2d(np.array(ratings))
     cutoff_max = maximum - 1 / 2 * (minimum + maximum)
@@ -115,8 +125,8 @@ def evaluator_weighted_estimator(
 
     Args:
         ratings: ratings.
-            When given as a 1-dimensional array,
-            it is treated as a row vector
+            Has to contain more than one rater
+            and more than one stimuli
         axis: axis along which the EWE is computed.
             A value of ``1``
             assumes stimuli as rows
@@ -124,6 +134,10 @@ def evaluator_weighted_estimator(
 
     Returns:
         EWE over raters
+
+    Examples:
+        >>> evaluator_weighted_estimator([[1, 1, 0], [2, 2, 1]])
+        array([0.66666667, 1.66666667])
 
     """
     ratings = np.array(ratings)
@@ -155,6 +169,18 @@ def mode(
     Returns:
         mode over raters
 
+    Examples:
+        >>> mode([0, 0, 1])
+        0
+        >>> mode(["a", "a", "b"])
+        'a'
+        >>> mode([0, 2])
+        1
+        >>> mode(["a", "c"])
+        'a'
+        >>> mode([None, None, "a"])
+        'a'
+
     """
     ratings = np.atleast_2d(np.array(ratings))
     return _value_or_array(
@@ -180,8 +206,7 @@ def rater_confidence_pearson(
     Args:
         ratings: ratings.
             Has to contain more than one rater
-            When given as a 1-dimensional array,
-            it is treated as a row vector
+            and more than one stimuli
         axis: axis along which the rater confidence is computed.
             A value of ``1``
             assumes stimuli as rows
@@ -189,6 +214,12 @@ def rater_confidence_pearson(
 
     Returns:
         rater confidences
+
+    Examples:
+        >>> rater_confidence_pearson([[1, 1, 0], [2, 2, 1]])
+        array([1., 1., 1.])
+        >>> rater_confidence_pearson([[1, 1, 0], [2, 2, 1], [2, 2, 2]])
+        array([0.94491118, 0.94491118, 0.8660254 ])
 
     """
     ratings = np.array(ratings)
