@@ -14,25 +14,38 @@ def test_icc():
     icc_sm, _ = audpsychometric.intra_class_correlation(
         data_wide, anova_method="statsmodels"
     )
-    icc_pingouin, _ = audpsychometric.intra_class_correlation(data_wide)
-    assert np.isclose(icc_pingouin, 0.727, atol=1e-3)
-    assert np.isclose(icc_sm, icc_pingouin, atol=1e-10)
+    for ratings in [data_wide, data_wide.values]:
+        icc_pingouin, _ = audpsychometric.intra_class_correlation(ratings)
+        assert np.isclose(icc_pingouin, 0.727, atol=1e-3)
+        assert np.isclose(icc_sm, icc_pingouin, atol=1e-10)
+        icc_pingouin_t, _ = audpsychometric.intra_class_correlation(ratings.T, axis=0)
+        assert np.isclose(icc_pingouin_t, icc_pingouin, atol=1e-10)
 
 
 def test_cronbachs_alpha():
     """Test cronbach's alpha return values for three raters."""
     df_dataset = audpsychometric.datasets.read_dataset("hallgren-table3")
     df = df_dataset[["Dep_Rater1", "Dep_Rater2", "Dep_Rater3"]]
-    alpha, result = audpsychometric.cronbachs_alpha(df)
-    assert isinstance(result, dict)
-    assert np.isclose(alpha, 0.8516, atol=1e-4)
+    for ratings in [df, df.values]:
+        alpha, result = audpsychometric.cronbachs_alpha(ratings)
+        assert isinstance(result, dict)
+        assert np.isclose(alpha, 0.8516, atol=1e-4)
+        alpha_t, _ = audpsychometric.cronbachs_alpha(ratings.T, axis=0)
+        assert np.isclose(alpha_t, alpha, atol=1e-10)
 
 
 def test_congeneric_reliability(df_holzinger_swineford):
     """Test congeneric reliability."""
-    coefficient, result = audpsychometric.congeneric_reliability(df_holzinger_swineford)
+    for ratings in [df_holzinger_swineford, df_holzinger_swineford.values]:
+        coefficient, result = audpsychometric.congeneric_reliability(ratings)
     assert np.isclose(coefficient, 0.9365, atol=1e-4)
     assert np.isclose(result["var. explained"][0], 0.3713, atol=1e-4)
+    for ratings in [df_holzinger_swineford, df_holzinger_swineford.values]:
+        coefficient, result = audpsychometric.congeneric_reliability(ratings)
+        assert np.isclose(coefficient, 0.9365, atol=1e-4)
+        assert np.isclose(result["var. explained"][0], 0.3713, atol=1e-4)
+        coefficient_t, _ = audpsychometric.congeneric_reliability(ratings.T, axis=0)
+        assert np.isclose(coefficient_t, coefficient, atol=1e-10)
 
 
 @pytest.mark.xfail(raises=ValueError)

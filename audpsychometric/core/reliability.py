@@ -3,6 +3,7 @@
 import typing
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import pingouin as pg
 import sklearn.decomposition
@@ -10,13 +11,14 @@ import statsmodels.api as sm
 import statsmodels.formula.api
 
 
-def cronbachs_alpha(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]:
+def cronbachs_alpha(
+    ratings: npt.ArrayLike,
+    *,
+    axis: int = 1,
+) -> typing.Tuple[float, typing.Dict]:
     r"""Calculate Cronbach's alpha.
 
     The Cronbach coefficient quantifying interrater agreement.
-    Uses a :class:`pd.DataFrame` in wide format,
-    i.e. consisting of an index
-    and rater's judgments as columns.
     Returns alpha as a float
     and additional information specific to this measure
     collated into a dictionary.
@@ -45,15 +47,21 @@ def cronbachs_alpha(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]:
     .. _blogpost on congeneric reliability: http://evaluationdashboard.com/index.php/2012/09/22/congeneric_reliability_r/
 
     Args:
-        df: table in wide format with one rater per column
+        ratings: ratings.
+            When given as a 1-dimensional array,
+            it is treated as a row vector
+        axis: axis along which the rater confidence is computed.
+            A value of ``1``
+            assumes stimuli as rows
 
     Returns:
          Cronbach's alpha and additional results lumped into dict
 
     """  # noqa: E501
-    n_items = len(df.columns)  # K
-    total_score = df.sum(axis=1)  # X = ∑ Y_i
-    variance_sum = df.var(axis=0, ddof=1).sum()  # ∑ var(Y_i)
+    ratings = np.atleast_2d(np.array(ratings))
+    n_items = ratings.shape[axis]  # K
+    total_score = np.sum(ratings, axis=axis)  # X = ∑ Y_i
+    variance_sum = np.var(ratings, axis=1 - axis, ddof=1).sum()  # ∑ var(Y_i)
     total_variance = total_score.var(ddof=1)  # var(X)
     alpha = n_items / (n_items - 1) * (1 - variance_sum / total_variance)
 
@@ -61,7 +69,11 @@ def cronbachs_alpha(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]:
     return alpha, result
 
 
-def congeneric_reliability(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]:
+def congeneric_reliability(
+    ratings: npt.ArrayLike,
+    *,
+    axis: int = 1,
+) -> typing.Tuple[float, typing.Dict]:
     r"""Congeneric reliability coefficient.
 
     Extracts the first Principal Component as a measurement model
@@ -72,17 +84,25 @@ def congeneric_reliability(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]
     :cite:p:`congeneric-reliability-wikipedia`.
 
     Args:
-        df: table in wide format with one rater per column
+        ratings: ratings.
+            When given as a 1-dimensional array,
+            it is treated as a row vector
+        axis: axis along which the rater confidence is computed.
+            A value of ``1``
+            assumes stimuli as rows
 
     Returns:
         Congeneric Reliability and additional results lumped into dict
 
     """
+    ratings = np.atleast_2d(np.array(ratings))
+    if axis == 0:
+        ratings = ratings.T
     pca = sklearn.decomposition.PCA(n_components=1)
-    pca.fit(df)
+    pca.fit(ratings)
     loadings = pca.components_.T * np.sqrt(pca.explained_variance_)  # λ_i
     loadings_sum = loadings.sum() ** 2  # (∑ λ_i)²
-    total_score = df.sum(axis=1)  # X = ∑ Y_i
+    total_score = np.sum(ratings, axis=1)  # X = ∑ Y_i
     total_variance = total_score.var(ddof=1)  # var(X)
 
     result = {}
@@ -94,7 +114,11 @@ def congeneric_reliability(df: pd.DataFrame) -> typing.Tuple[float, typing.Dict]
 
 
 def intra_class_correlation(
-    df: pd.DataFrame, icc_type: str = "ICC_1_1", anova_method: str = "pingouin"
+    ratings: npt.ArrayLike,
+    *,
+    axis: int = 1,
+    icc_type: str = "ICC_1_1",
+    anova_method: str = "pingouin",
 ) -> typing.Tuple[float, typing.Dict]:
     r"""Intraclass Correlation.
 
@@ -106,7 +130,12 @@ def intra_class_correlation(
     and ratings must at least be ordinally scaled.
 
     Args:
-        df: table in wide format with one rater per column
+        ratings: ratings.
+            When given as a 1-dimensional array,
+            it is treated as a row vector
+        axis: axis along which the rater confidence is computed.
+            A value of ``1``
+            assumes stimuli as rows
         icc_type: ICC Method, see description below
         anova_method: method for ANOVA calculation,
             can be ``"pingouin"`` or ``"statsmodels"``
@@ -277,6 +306,13 @@ def intra_class_correlation(
         Ratings will be available under the column rating.
 
     """  # noqa: E501
+    if not isinstance(ratings, pd.DataFrame):
+        df = pd.DataFrame(np.atleast_2d(np.array(ratings)))
+    else:
+        df = ratings
+
+    if axis == 0:
+        df = df.T
 
     def _anova(df_long: pd.DataFrame, anova_method: str = "pingouin") -> pd.DataFrame:
         """Helper to get the anova table.
