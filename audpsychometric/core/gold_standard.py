@@ -151,7 +151,7 @@ def mode(
     ratings: typing.Sequence,
     *,
     axis: int = 1,
-) -> typing.Union[float, np.ndarray]:
+) -> typing.Any:
     r"""Mode of categorical ratings.
 
     ``None`` and ``nan`` values are ignored per item.
