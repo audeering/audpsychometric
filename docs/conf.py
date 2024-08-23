@@ -46,6 +46,9 @@ bibtex_default_style = "alpha"
 autodoc_mock_imports = [
     "tqdm",
 ]
+autodoc_type_aliases = {
+    "ArrayLike": "ArrayLike",
+}
 
 # Reference with :ref:`data-header:Database`
 autosectionlabel_prefix_document = True
@@ -81,4 +84,5 @@ intersphinx_mapping = {
     "scipy": ("http://docs.scipy.org/doc/scipy/reference/", None),
     "seaborn": ("https://seaborn.pydata.org/", None),
     "sklearn": ("http://scikit-learn.org/stable", None),
+    "python": ("https://docs.python.org/3/", None),
 }

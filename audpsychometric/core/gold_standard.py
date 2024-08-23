@@ -1,14 +1,13 @@
 import typing
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 
 import audmetric
 
 
 def confidence_categorical(
-    ratings: npt.ArrayLike,
+    ratings: typing.Sequence,
     *,
     axis: int = 1,
 ) -> typing.Union[float, np.ndarray]:
@@ -51,7 +50,7 @@ def confidence_categorical(
 
 
 def confidence_numerical(
-    ratings: npt.ArrayLike,
+    ratings: typing.Sequence,
     minimum: float,
     maximum: float,
     *,
@@ -102,7 +101,7 @@ def confidence_numerical(
 
 
 def evaluator_weighted_estimator(
-    ratings: npt.ArrayLike,
+    ratings: typing.Sequence,
     *,
     axis: int = 1,
 ) -> typing.Union[float, np.ndarray]:
@@ -149,7 +148,7 @@ def evaluator_weighted_estimator(
 
 
 def mode(
-    ratings: npt.ArrayLike,
+    ratings: typing.Sequence,
     *,
     axis: int = 1,
 ) -> typing.Union[float, np.ndarray]:
@@ -189,7 +188,7 @@ def mode(
 
 
 def rater_confidence_pearson(
-    ratings: npt.ArrayLike,
+    ratings: typing.Sequence,
     *,
     axis: int = 1,
 ) -> np.ndarray:

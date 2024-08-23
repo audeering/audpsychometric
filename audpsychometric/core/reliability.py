@@ -1,9 +1,6 @@
-"""Psychometric Functions for Interrater Reliability."""
-
 import typing
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 import pingouin as pg
 import sklearn.decomposition
@@ -12,7 +9,7 @@ import statsmodels.formula.api
 
 
 def cronbachs_alpha(
-    ratings: npt.ArrayLike,
+    ratings: typing.Sequence,
     *,
     axis: int = 1,
 ) -> typing.Tuple[float, typing.Dict]:
@@ -70,7 +67,7 @@ def cronbachs_alpha(
 
 
 def congeneric_reliability(
-    ratings: npt.ArrayLike,
+    ratings: typing.Sequence,
     *,
     axis: int = 1,
 ) -> typing.Tuple[float, typing.Dict]:
@@ -114,7 +111,7 @@ def congeneric_reliability(
 
 
 def intra_class_correlation(
-    ratings: npt.ArrayLike,
+    ratings: typing.Sequence,
     *,
     axis: int = 1,
     icc_type: str = "ICC_1_1",
