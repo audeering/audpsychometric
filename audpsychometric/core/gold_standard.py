@@ -15,8 +15,8 @@ def agreement_categorical(
 
     The agreement for categorical data
     is given by the fraction of raters per item
-    with the rating being equal to that of the gold standard
-    as given by :func:`audpsychometric.mode`.
+    with the rating being equal to the mode
+    given by :func:`audpsychometric.mode`.
     ``None`` and ``nan`` values are ignored per item.
 
     Args:
