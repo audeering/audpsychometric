@@ -1,411 +1,262 @@
-"""Tests of the module calculating gold standard and item confidence.
-
-Examples:
-    pytest tests/test_goldstandard.py -k test_evaluator_weighted_estimator
-
-"""
-
-import io
+import typing
 
 import numpy as np
 import pandas as pd
 import pytest
 
 import audpsychometric
-from audpsychometric.core.gold_standard import _confidence_categorical
 
 
-def test_rater_confidence_pearson(df_holzinger_swineford):
-    """Happy Flow test for mode for rater based consistency."""
-    result = audpsychometric.rater_confidence_pearson(df_holzinger_swineford)
-    result_values = np.array([x for x in result.values()])
+def to_list_array_frame_series(
+    x: list,
+) -> typing.Tuple[list, np.ndarray, pd.DataFrame, typing.Optional[pd.Series]]:
+    r"""Converts list to other input objects.
+
+    It converts a list to an array,
+    dataframe,
+    and if is not a nested list (1-dimensional),
+    to a series.
+    For a 1-dimensional input,
+    a dataframe with a single row is created.
+
+    Args:
+        x: values
+
+    Returns:
+        tuple containing values as list, array, dataframe,
+        and maybe series
+
+    """
+    # list, array, dataframe
+    outputs = [x, np.array(x), pd.DataFrame(np.atleast_2d(x))]
+    # series
+    if np.array(x).ndim == 1:
+        outputs.append(pd.Series(x))
+    return tuple(outputs)
+
+
+@pytest.mark.parametrize(
+    "ratings, axis, expected",
+    [
+        # axis = 0
+        ([0], 0, 1.0),
+        (["a"], 0, 1.0),
+        ([0, 0], 0, np.array([1.0, 1.0])),
+        ([[0, 0]], 0, np.array([1.0, 1.0])),
+        ([[0], [0]], 0, 1.0),
+        ([[None], ["a"]], 0, 1.0),
+        # axis = 1
+        ([0], 1, 1.0),
+        (["a"], 1, 1.0),
+        ([0, 0], 1, 1.0),
+        ([[0, 0]], 1, 1.0),
+        ([[0], [0]], 1, np.array([1.0, 1.0])),
+        ([0, 0, 1], 1, 2 / 3),
+        ([0, 0, 1, 1], 1, 0.5),
+        (["a", "a", "b"], 1, 2 / 3),
+        (["a", "a", "b", "b"], 1, 0.5),
+        ([0, 1, 2], 1, 1 / 3),
+        ([0, 1, 2, 2], 1, 0.5),
+        (["a", "b", "c"], 1, 1 / 3),
+        (["a", "b", "c", "c"], 1, 0.5),
+        ([np.nan, 1, 1], 1, 1.0),
+        ([np.nan, 0, 1], 1, 0.5),
+        ([None, "a", "a"], 1, 1.0),
+        ([None, "a", "b"], 1, 0.5),
+        ([None, np.nan, 1], 1, 1.0),
+    ],
+)
+def test_agreement_categorical(ratings, axis, expected):
+    """Test agreement for categorical ratings.
+
+    Args:
+        ratings: ratings as list
+        axis: axis along to compute agreement
+        expected: expected agreement score(s)
+
+    """
+    for x in to_list_array_frame_series(ratings):
+        np.testing.assert_equal(
+            audpsychometric.agreement_categorical(x, axis=axis),
+            expected,
+        )
+
+
+# The expected agreement value for this test
+# can be calculated by:
+#
+# def agreement(rating, minimum, maximum):
+#     max_std = (maximum - minimum) / 2
+#     std = np.std(rating)
+#     std_norm = np.clip(std/max_std, 0, 1)
+#     return 1 - std_norm
+#
+@pytest.mark.parametrize(
+    "ratings, minimum, maximum, axis, expected",
+    [
+        # axis = 0
+        ([0], 0, 1, 0, 1.0),
+        ([0, 0], 0, 1, 0, np.array([1.0, 1.0])),
+        ([[0, 0]], 0, 1, 0, np.array([1.0, 1.0])),
+        ([[0], [0]], 0, 1, 0, 1.0),
+        ([[0.3, 0.3, 0.3]], 0, 1, 0, np.array([1.0, 1.0, 1.0])),
+        ([0, 1], 0, 1, 0, np.array([1.0, 1.0])),
+        ([[0], [1]], 0, 1, 0, 0.0),
+        ([[0], [1]], 0, 2, 0, 0.5),
+        ([[1, 1]], 0, 1, 0, np.array([1.0, 1.0])),
+        ([[1, 2, 3], [3, 4, 5]], 0, 10, 0, np.array([0.8, 0.8, 0.8])),
+        # axis = 1
+        ([0], 0, 1, 1, 1.0),
+        ([0, 0], 0, 1, 0, 1.0),
+        ([[0, 0]], 0, 1, 1, 1.0),
+        ([[0], [0]], 0, 1, 1, np.array([1.0, 1.0])),
+        ([[1, 1]], 0, 1, 1, 1.0),
+        ([[0.3, 0.3, 0.3]], 0, 1, 1, 1.0),
+        ([0, 1], 0, 1, 1, 0.0),
+        ([np.nan, 1], 0, 1, 1, np.nan),
+        ([[0, 0, 0.1, 0.2]], 0, 1, 1, 0.83416876048223),
+        ([[0, 0, 0.2, 0.4]], 0, 1, 1, 0.66833752096446),
+        ([[0, 0, 0, 0, 0.2, 0.2, 0.4, 0.4]], 0, 1, 1, 0.66833752096446),
+        ([[0, 0.4, 0.6, 1]], 0, 1, 1, 0.2788897449072021),
+        ([[0, 0.33, 0.67, 1]], 0, 1, 1, 0.2531399060064863),
+        ([[0, 1]], 0, 1, 1, 0.0),
+        ([[0, 0, 1, 1]], 0, 1, 1, 0.0),
+        (
+            [[1, 2, 3], [3, 4, 5]],
+            0,
+            10,
+            1,
+            np.array([0.8367006838144548, 0.8367006838144548]),
+        ),
+    ],
+)
+def test_agreement_numerical(ratings, minimum, maximum, axis, expected):
+    """Test agreement for numerical ratings.
+
+    If only a vector is given for ``ratings``,
+    it should be treated as column vector.
+    An value of 0 for ``axis``
+    should compute the agreement scores along rows.
+
+    Args:
+        ratings: ratings as list
+        minimum: lower limit of ratings
+        maximum: upper limit of ratings
+        axis: axis along to compute agreement
+        expected: expected agreement score(s)
+
+    """
+    for x in to_list_array_frame_series(ratings):
+        np.testing.assert_equal(
+            audpsychometric.agreement_numerical(x, minimum, maximum, axis=axis),
+            expected,
+        )
+
+
+def test_rater_agreement_pearson(df_holzinger_swineford):
+    """Test rater agreement."""
     # there is a very unrealible rater in this set with .24
-    assert all(x > 0.2 for x in result_values)
-
-
-def test_mode_based_gold_standard():
-    """Happy Flow test for mode based gold standard."""
-    df = pd.DataFrame([[4, 9, np.nan]] * 3, columns=["A", "B", "C"])
-    df = audpsychometric.gold_standard_mode(df)
-    assert isinstance(df, pd.DataFrame)
-    assert "gold_standard" in df.columns
-    assert "confidence" in df.columns
-    assert np.all((df["confidence"] >= 0.0) & (df["confidence"] <= 1.0).values)
-
-
-# The expected confidence value for this test
-# can be calculated by
-#
-# def confidence(rating, minimum, maximum):
-#     max_std = (maximum - minimum) / 2
-#     std = np.std(rating)
-#     std_norm = np.clip(std/max_std, 0, 1)
-#     return 1 - std_norm
-#
-@pytest.mark.parametrize(
-    "df, minimum, maximum, axis, df_expected",
-    [
-        (
-            pd.DataFrame([0]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.0, 1.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.0, 1.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[1, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[1.0, 1.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0.3, 0.3, 0.3]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.3, 1.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0, 0.1, 0.2]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.075, 0.83416876048223]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0, 0.2, 0.4]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.150, 0.66833752096446]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0, 0, 0, 0.2, 0.2, 0.4, 0.4]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.150, 0.66833752096446]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0.4, 0.6, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.5, 0.2788897449072021]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0.33, 0.67, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.5, 0.2531399060064863]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.5, 0.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0, 1, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.5, 0.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame(
-                [
-                    [1, 2, 3],
-                    [3, 4, 5],
-                ]
-            ),
-            0,
-            10,
-            0,
-            pd.DataFrame(
-                [
-                    [2.0, 0.8],
-                    [3.0, 0.8],
-                    [4.0, 0.8],
-                ],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame(
-                [
-                    [1, 2, 3],
-                    [3, 4, 5],
-                ]
-            ),
-            0,
-            10,
-            1,
-            pd.DataFrame(
-                [
-                    [2.0, 0.8367006838144548],
-                    [4.0, 0.8367006838144548],
-                ],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-    ],
-)
-def test_mean_based_gold_standard(df, minimum, maximum, axis, df_expected):
-    """Happy Flow test for mode based gold standard."""
-    pd.testing.assert_frame_equal(
-        audpsychometric.gold_standard_mean(df, minimum, maximum, axis=axis),
-        df_expected,
+    expected = np.array(
+        [
+            0.52203673,
+            0.27524307,
+            0.37017212,
+            0.58070663,
+            0.52538537,
+            0.59513902,
+            0.24573167,
+            0.36905549,
+            0.49478097,
+        ],
+    )
+    np.testing.assert_allclose(
+        audpsychometric.rater_agreement_pearson(df_holzinger_swineford),
+        expected,
     )
 
 
-# The expected confidence value for this test
-# can be calculated by
-#
-# def confidence(rating, minimum, maximum):
-#     max_std = (maximum - minimum) / 2
-#     std = np.std(rating)
-#     std_norm = np.clip(std/max_std, 0, 1)
-#     return 1 - std_norm
-#
 @pytest.mark.parametrize(
-    "df, minimum, maximum, axis, df_expected",
+    "ratings, axis, expected",
     [
-        (
-            pd.DataFrame([0]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.0, 1.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.0, 1.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[1, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[1.0, 1.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0.3, 0.3, 0.3]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.3, 1.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0, 0.1, 0.2]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.05, 0.83416876048223]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0, 0.2, 0.4]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.1, 0.66833752096446]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0, 0, 0, 0.2, 0.2, 0.4, 0.4]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.1, 0.66833752096446]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0.4, 0.6, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.5, 0.2788897449072021]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0.33, 0.67, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.5, 0.2531399060064863]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.5, 0.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame([[0, 0, 1, 1]]),
-            0,
-            1,
-            1,
-            pd.DataFrame(
-                [[0.5, 0.0]],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame(
-                [
-                    [1, 2, 3],
-                    [3, 4, 5],
-                ]
-            ),
-            0,
-            10,
-            0,
-            pd.DataFrame(
-                [
-                    [2.0, 0.8],
-                    [3.0, 0.8],
-                    [4.0, 0.8],
-                ],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
-        (
-            pd.DataFrame(
-                [
-                    [1, 2, 3],
-                    [3, 4, 5],
-                ]
-            ),
-            0,
-            10,
-            1,
-            pd.DataFrame(
-                [
-                    [2.0, 0.8367006838144548],
-                    [4.0, 0.8367006838144548],
-                ],
-                columns=["gold_standard", "confidence"],
-            ),
-        ),
+        # axis = 0
+        ([0], 0, 0),
+        ([0, 0], 0, np.array([0, 0])),
+        ([[0, 0]], 0, np.array([0, 0])),
+        ([[0], [0]], 0, 0),
+        (["a"], 0, "a"),
+        (["a", "a"], 0, np.array(["a", "a"])),
+        ([["a", "a"]], 0, np.array(["a", "a"])),
+        ([["a"], ["a"]], 0, "a"),
+        ([[np.nan, 1], [2, np.nan]], 0, np.array([2, 1])),
+        # axis = 1
+        ([0], 1, 0),
+        ([0, 0], 1, 0),
+        ([0, 1], 1, 1),
+        ([0, 0, 1], 1, 0),
+        ([0, 1, 2], 1, 1),
+        ([0, 1, 1], 1, 1),
+        ([0, 2, 2, 1], 1, 2),
+        ([0, 2, 2, 1, 1], 1, 2),
+        ([0, 2, 2, 1, 1, 1], 1, 1),
+        ([0, 2], 1, 1),
+        ([[0, 0]], 1, 0),
+        ([[0], [0]], 1, np.array([0, 0])),
+        ([[1, 1]], 1, 1),
+        (["a"], 1, "a"),
+        (["a", "a"], 1, "a"),
+        (["a", "b"], 1, "a"),
+        (["b", "a"], 1, "b"),
+        (["a", "a", "b"], 1, "a"),
+        (["b", "a", "a"], 1, "a"),
+        (["a", "b", "c"], 1, "a"),
+        (["a", "c", "c", "b"], 1, "c"),
+        (["a", "c", "c", "b", "b"], 1, "c"),
+        (["a", "c", "c", "b", "b", "b"], 1, "b"),
+        ([["a", "a"]], 1, "a"),
+        ([["a"], ["a"]], 1, np.array(["a", "a"])),
+        ([np.nan, np.nan, 1], 1, 1),
+        ([np.nan, np.nan, None, None, 1], 1, 1),
+        ([[np.nan, 1], [2, np.nan]], 1, np.array([1, 2])),
     ],
 )
-def test_median_based_gold_standard(df, minimum, maximum, axis, df_expected):
-    """Test that median gold standard returns df."""
-    pd.testing.assert_frame_equal(
-        audpsychometric.gold_standard_median(df, minimum, maximum, axis=axis),
-        df_expected,
-    )
+def test_mode(ratings, axis, expected):
+    """Test mode over ratings.
+
+    If the categories are integers,
+    and there is no winner,
+    mode should return the average of all winners.
+    For other categories,
+    the first item should be returned
+    of the winning categories.
+
+    Args:
+        ratings: ratings as list
+        axis: axis along to compute mode
+        expected: expected mode values
+
+    """
+    for x in to_list_array_frame_series(ratings):
+        np.testing.assert_equal(
+            audpsychometric.mode(x, axis=axis),
+            expected,
+        )
 
 
 @pytest.mark.parametrize("axis", [0, 1])
 def test_evaluator_weighted_estimator(df_holzinger_swineford, axis):
-    """Happy Flow test for mode based gold standard."""
-    if axis == 0:
-        df_holzinger_swineford = df_holzinger_swineford.T
+    """Test EWE over ratings.
 
-    df_ewe = audpsychometric.evaluator_weighted_estimator(
+    Args:
+        df_holzinger_swineford: df_holzinger_swineford fixture
+        axis: axis along to compute EWE
+
+    """
+    ewe = audpsychometric.evaluator_weighted_estimator(
         df_holzinger_swineford,
-        0,
-        10,
         axis=axis,
     )
-
-    # results obtained from reference implementation
-    test_data = io.StringIO(
-        """idx,ewe
-    0,3.834844
-    1,3.890689
-    2,2.681920
-    3,4.143616
-    4,3.895072
-    296,3.723935
-    297,3.580962
-    298,4.853387
-    299,3.946110
-    300,4.602326"""
-    )
-
-    df_test_data = pd.read_csv(test_data, sep=",", index_col="idx")
-    true_results = df_test_data.copy(deep=True).values.flatten()
-    data_results = df_ewe["EWE"].loc[df_test_data.index].values.flatten()
-    assert np.allclose(data_results, true_results)
-
-
-@pytest.mark.xfail(raises=ValueError)
-def test_f_categorical(df_holzinger_swineford):
-    """Test that functional raises when no gold column."""
-    _ = _confidence_categorical(df_holzinger_swineford)
+    if axis == 0:
+        expected = df_holzinger_swineford.values.shape[1]
+    elif axis == 1:
+        expected = df_holzinger_swineford.values.shape[0]
+    assert ewe.shape[0] == expected
