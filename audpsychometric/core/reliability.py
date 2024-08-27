@@ -126,6 +126,9 @@ def intra_class_correlation(
     The model is based on analysis of variance,
     and ratings must at least be ordinally scaled.
 
+    CCC_ is conceptually and numerically related to the ICC.
+    For an implementation see :func:`audmetric.concordance_cc`.
+
     Args:
         ratings: ratings.
             When given as a 1-dimensional array,
@@ -136,6 +139,8 @@ def intra_class_correlation(
         icc_type: ICC Method, see description below
         anova_method: method for ANOVA calculation,
             can be ``"pingouin"`` or ``"statsmodels"``
+
+    .. _CCC: https://en.wikipedia.org/wiki/Concordance_correlation_coefficient
 
     Returns:
         icc and additional results lumped into dict

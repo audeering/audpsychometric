@@ -1,12 +1,12 @@
 import numpy as np
 import pytest
 
-from audpsychometric import datasets
+import audpsychometric
 
 
 @pytest.fixture(scope="function")
 def df_holzinger_swineford():
-    df_dataset = datasets.read_dataset("HolzingerSwineford1939")
+    df_dataset = audpsychometric.read_dataset("HolzingerSwineford1939")
     cols_use = [col for col in df_dataset.columns if col.startswith("x")]
     df = df_dataset[cols_use].astype(np.float32)
     return df
