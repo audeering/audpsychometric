@@ -47,7 +47,7 @@ def list_datasets():
         dataframe listing available datasets
 
     Examples:
-        >>> list_datasets().head()
+        >>> list_datasets()
                                                      fname  ...                   description
         dataset                                             ...
         statology                            statology.csv  ...      icc sample from web page
@@ -55,8 +55,9 @@ def list_datasets():
         hallgren-table3              Hallgren-Table-03.csv  ...  kappa table from publication
         HolzingerSwineford1939  HolzingerSwineford1939.csv  ...                        lavaan
         Shrout_Fleiss               Shrout_Fleiss_1979.csv  ...            Dataset from paper
+        wine                                      wine.csv  ...                 online source
         <BLANKLINE>
-        [5 rows x 4 columns]
+        [6 rows x 4 columns]
 
     """  # noqa: E501
     df_data_sets = data_sets.set_index("dataset")
