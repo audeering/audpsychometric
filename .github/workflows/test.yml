@@ -59,9 +59,9 @@ jobs:
       if: matrix.tasks == 'docs'
 
     - name: Test building documentation
-      run: python -m sphinx docs/ docs/_build/ -b html -W
+      run: python -m sphinx docs/ build/html -b html -W
       if: matrix.tasks == 'docs'
 
     - name: Check links in documentation
-      run: python -m sphinx docs/ docs/_build/ -b linkcheck -W
+      run: python -m sphinx docs/ build/html -b linkcheck -W
       if: matrix.tasks == 'docs'
