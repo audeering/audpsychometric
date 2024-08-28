@@ -293,20 +293,6 @@ def intra_class_correlation(
         - :math:`k` is the number of raters
         - :math:`n` is the number of items
 
-        **Implementation Details**
-
-        For doing the analysis,
-        the :class:`pd.DataFrame` is preprocessed:
-        The first step will melt
-        and the data into a long format
-        for checking incomplete cases.
-        In this process,
-        the index  will be renamed to a column item
-        to mimic classical test theory conventions.
-        The raters will end up in a separate column
-        containing the ratings.
-        Ratings will be available under the column rating.
-
     """  # noqa: E501
     if not isinstance(ratings, pd.DataFrame):
         df = pd.DataFrame(np.atleast_2d(np.array(ratings)))
