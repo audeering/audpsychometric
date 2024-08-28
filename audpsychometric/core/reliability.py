@@ -126,6 +126,9 @@ def intra_class_correlation(
     The model is based on analysis of variance,
     and ratings must at least be ordinally scaled.
 
+    CCC_ is conceptually and numerically related to the ICC.
+    For an implementation see :func:`audmetric.concordance_cc`.
+
     Args:
         ratings: ratings.
             When given as a 1-dimensional array,
@@ -136,6 +139,8 @@ def intra_class_correlation(
         icc_type: ICC Method, see description below
         anova_method: method for ANOVA calculation,
             can be ``"pingouin"`` or ``"statsmodels"``
+
+    .. _CCC: https://en.wikipedia.org/wiki/Concordance_correlation_coefficient
 
     Returns:
         icc and additional results lumped into dict
@@ -287,20 +292,6 @@ def intra_class_correlation(
         - :math:`\text{ems}` is the error/residual mean square
         - :math:`k` is the number of raters
         - :math:`n` is the number of items
-
-        **Implementation Details**
-
-        For doing the analysis,
-        the :class:`pd.DataFrame` is preprocessed:
-        The first step will melt
-        and the data into a long format
-        for checking incomplete cases.
-        In this process,
-        the index  will be renamed to a column item
-        to mimic classical test theory conventions.
-        The raters will end up in a separate column
-        containing the ratings.
-        Ratings will be available under the column rating.
 
     """  # noqa: E501
     if not isinstance(ratings, pd.DataFrame):

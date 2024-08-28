@@ -7,7 +7,7 @@ import audpsychometric
 
 def test_icc():
     """Test icc basic result validity."""
-    df_dataset = audpsychometric.datasets.read_dataset("wine")
+    df_dataset = audpsychometric.read_dataset("wine")
 
     data_wide = df_dataset.pivot_table(index="Wine", columns="Judge", values="Scores")
 
@@ -24,7 +24,7 @@ def test_icc():
 
 def test_cronbachs_alpha():
     """Test cronbach's alpha return values for three raters."""
-    df_dataset = audpsychometric.datasets.read_dataset("hallgren-table3")
+    df_dataset = audpsychometric.read_dataset("hallgren-table3")
     df = df_dataset[["Dep_Rater1", "Dep_Rater2", "Dep_Rater3"]]
     for ratings in [df, df.values]:
         alpha, result = audpsychometric.cronbachs_alpha(ratings)
@@ -56,7 +56,7 @@ def test_anova_helper():
 
 def test_icc_nanremoval():
     """Cover nan removal if statement."""
-    df_dataset = audpsychometric.datasets.read_dataset("HolzingerSwineford1939")
+    df_dataset = audpsychometric.read_dataset("HolzingerSwineford1939")
     df_dataset = df_dataset[[x for x in df_dataset.columns if x.startswith("x")]]
     nan_mat = np.random.random(df_dataset.shape) < 0.1
     audpsychometric.intra_class_correlation(df_dataset.mask(nan_mat))
