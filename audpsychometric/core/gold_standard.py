@@ -89,7 +89,7 @@ def agreement_numerical(
         >>> agreement_numerical([0, 0], 0, 1)
         1.0
         >>> agreement_numerical([0, np.nan], 0, 1)
-        nan
+        1.0
 
     """
     ratings = np.atleast_2d(np.array(ratings))
