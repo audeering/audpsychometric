@@ -79,6 +79,7 @@ def test_agreement_categorical(ratings, axis, expected):
         np.testing.assert_equal(
             audpsychometric.agreement_categorical(x, axis=axis),
             expected,
+            strict=True,
         )
 
 
@@ -150,6 +151,7 @@ def test_agreement_numerical(ratings, minimum, maximum, axis, expected):
         np.testing.assert_equal(
             audpsychometric.agreement_numerical(x, minimum, maximum, axis=axis),
             expected,
+            strict=True,
         )
 
 
@@ -172,6 +174,7 @@ def test_rater_agreement(df_holzinger_swineford):
     np.testing.assert_allclose(
         audpsychometric.rater_agreement(df_holzinger_swineford),
         expected,
+        strict=True,
     )
 
 
@@ -239,6 +242,7 @@ def test_mode(ratings, axis, expected):
         np.testing.assert_equal(
             audpsychometric.mode(x, axis=axis),
             expected,
+            strict=True,
         )
 
 
