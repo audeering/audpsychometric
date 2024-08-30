@@ -93,11 +93,12 @@ def agreement_numerical(
 
     """
     ratings = np.atleast_2d(np.array(ratings))
-    cutoff_max = maximum - 1 / 2 * (minimum + maximum)
-    std = ratings.std(ddof=0, axis=axis)
-    return _value_or_array(
-        np.max([np.zeros(std.shape), np.ones(std.shape) - std / cutoff_max])
-    )
+
+    def _agreement(row):
+        cutoff_max = maximum - 1 / 2 * (minimum + maximum)
+        return max([0.0, 1 - np.nanstd(row, ddof=0) / cutoff_max])
+
+    return _value_or_array(np.apply_along_axis(_agreement, axis, ratings))
 
 
 def evaluator_weighted_estimator(
