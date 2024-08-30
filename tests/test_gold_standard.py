@@ -153,7 +153,7 @@ def test_agreement_numerical(ratings, minimum, maximum, axis, expected):
         )
 
 
-def test_rater_agreement_pearson(df_holzinger_swineford):
+def test_rater_agreement(df_holzinger_swineford):
     """Test rater agreement."""
     # there is a very unrealible rater in this set with .24
     expected = np.array(
@@ -170,7 +170,7 @@ def test_rater_agreement_pearson(df_holzinger_swineford):
         ],
     )
     np.testing.assert_allclose(
-        audpsychometric.rater_agreement_pearson(df_holzinger_swineford),
+        audpsychometric.rater_agreement(df_holzinger_swineford),
         expected,
     )
 

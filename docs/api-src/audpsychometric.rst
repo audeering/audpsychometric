@@ -15,5 +15,5 @@ audpsychometric
     intra_class_correlation
     list_datasets
     mode
-    rater_agreement_pearson
+    rater_agreement
     read_dataset

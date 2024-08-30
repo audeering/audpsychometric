@@ -140,7 +140,7 @@ def evaluator_weighted_estimator(
 
     """
     ratings = np.array(ratings)
-    agreements = rater_agreement_pearson(ratings, axis=axis)
+    agreements = rater_agreement(ratings, axis=axis)
     # Ensure columns represents different raters
     if axis == 0:
         ratings = ratings.T
@@ -197,7 +197,7 @@ def mode(
     )
 
 
-def rater_agreement_pearson(
+def rater_agreement(
     ratings: typing.Sequence,
     *,
     axis: int = 1,
@@ -205,7 +205,7 @@ def rater_agreement_pearson(
     """Calculate rater agreements.
 
     Calculate the agreement of a rater
-    by the correlation of a rater
+    by the Pearson correlation of a rater
     with the mean score of all other raters.
 
     This should not be confused with the agreement value
@@ -225,9 +225,9 @@ def rater_agreement_pearson(
         rater agreements
 
     Examples:
-        >>> rater_agreement_pearson([[1, 1, 0], [2, 2, 1]])
+        >>> rater_agreement([[1, 1, 0], [2, 2, 1]])
         array([1., 1., 1.])
-        >>> rater_agreement_pearson([[1, 1, 0], [2, 2, 1], [2, 2, 2]])
+        >>> rater_agreement([[1, 1, 0], [2, 2, 1], [2, 2, 2]])
         array([0.94491118, 0.94491118, 0.8660254 ])
 
     """
