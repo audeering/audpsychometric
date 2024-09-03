@@ -79,6 +79,7 @@ def test_agreement_categorical(ratings, axis, expected):
         np.testing.assert_equal(
             audpsychometric.agreement_categorical(x, axis=axis),
             expected,
+            strict=True,
         )
 
 
@@ -105,15 +106,16 @@ def test_agreement_categorical(ratings, axis, expected):
         ([[0], [1]], 0, 2, 0, 0.5),
         ([[1, 1]], 0, 1, 0, np.array([1.0, 1.0])),
         ([[1, 2, 3], [3, 4, 5]], 0, 10, 0, np.array([0.8, 0.8, 0.8])),
+        ([[1, 2, 3], [3, 4, 4]], 0, 10, 0, np.array([0.8, 0.8, 0.9])),
         # axis = 1
         ([0], 0, 1, 1, 1.0),
-        ([0, 0], 0, 1, 0, 1.0),
+        ([0, 0], 0, 1, 1, 1.0),
         ([[0, 0]], 0, 1, 1, 1.0),
         ([[0], [0]], 0, 1, 1, np.array([1.0, 1.0])),
         ([[1, 1]], 0, 1, 1, 1.0),
         ([[0.3, 0.3, 0.3]], 0, 1, 1, 1.0),
         ([0, 1], 0, 1, 1, 0.0),
-        ([np.nan, 1], 0, 1, 1, np.nan),
+        ([np.nan, 1], 0, 1, 1, 1.0),
         ([[0, 0, 0.1, 0.2]], 0, 1, 1, 0.83416876048223),
         ([[0, 0, 0.2, 0.4]], 0, 1, 1, 0.66833752096446),
         ([[0, 0, 0, 0, 0.2, 0.2, 0.4, 0.4]], 0, 1, 1, 0.66833752096446),
@@ -127,6 +129,13 @@ def test_agreement_categorical(ratings, axis, expected):
             10,
             1,
             np.array([0.8367006838144548, 0.8367006838144548]),
+        ),
+        (
+            [[1, 2, 3], [3, 4, 4]],
+            0,
+            10,
+            1,
+            np.array([0.8367006838144548, 0.9057190958417937]),
         ),
     ],
 )
@@ -150,6 +159,7 @@ def test_agreement_numerical(ratings, minimum, maximum, axis, expected):
         np.testing.assert_equal(
             audpsychometric.agreement_numerical(x, minimum, maximum, axis=axis),
             expected,
+            strict=True,
         )
 
 
@@ -172,6 +182,7 @@ def test_rater_agreement(df_holzinger_swineford):
     np.testing.assert_allclose(
         audpsychometric.rater_agreement(df_holzinger_swineford),
         expected,
+        strict=True,
     )
 
 
@@ -239,6 +250,7 @@ def test_mode(ratings, axis, expected):
         np.testing.assert_equal(
             audpsychometric.mode(x, axis=axis),
             expected,
+            strict=True,
         )
 
 

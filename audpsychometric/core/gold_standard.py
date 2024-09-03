@@ -66,6 +66,7 @@ def agreement_numerical(
         )
 
     with :math:`\text{std}` the population standard deviation of the ratings.
+    ``nan`` values are ignored per item.
 
     Args:
         ratings: ratings.
@@ -89,15 +90,16 @@ def agreement_numerical(
         >>> agreement_numerical([0, 0], 0, 1)
         1.0
         >>> agreement_numerical([0, np.nan], 0, 1)
-        nan
+        1.0
 
     """
     ratings = np.atleast_2d(np.array(ratings))
-    cutoff_max = maximum - 1 / 2 * (minimum + maximum)
-    std = ratings.std(ddof=0, axis=axis)
-    return _value_or_array(
-        np.max([np.zeros(std.shape), np.ones(std.shape) - std / cutoff_max])
-    )
+
+    def _agreement(row):
+        cutoff_max = maximum - 1 / 2 * (minimum + maximum)
+        return max([0.0, 1 - np.nanstd(row, ddof=0) / cutoff_max])
+
+    return _value_or_array(np.apply_along_axis(_agreement, axis, ratings))
 
 
 def evaluator_weighted_estimator(
