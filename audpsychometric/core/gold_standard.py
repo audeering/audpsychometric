@@ -66,6 +66,7 @@ def agreement_numerical(
         )
 
     with :math:`\text{std}` the population standard deviation of the ratings.
+    ``nan`` values are ignored per item.
 
     Args:
         ratings: ratings.
