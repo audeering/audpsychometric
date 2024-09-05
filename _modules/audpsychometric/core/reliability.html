@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>audpsychometric.core.reliability &mdash; Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    
+  
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../../../index.html">
+          
+            <img src="../../../_static/images/audeering.png" class="logo" alt="audEERING"/>
+          
+          
+            <span> audpsychometric</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audpsychometric.html">audpsychometric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibliography.html">Bibliography</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">audpsychometric</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>audpsychometric.core.reliability</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for audpsychometric.core.reliability</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pingouin</span> <span class="k">as</span> <span class="nn">pg</span>
+<span class="kn">import</span> <span class="nn">sklearn.decomposition</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+<span class="kn">import</span> <span class="nn">statsmodels.formula.api</span>
+
+
+<div class="viewcode-block" id="cronbachs_alpha"><a class="viewcode-back" href="../../../api/audpsychometric.cronbachs_alpha.html#audpsychometric.cronbachs_alpha">[docs]</a><span class="k">def</span> <span class="nf">cronbachs_alpha</span><span class="p">(</span>
+    <span class="n">ratings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate Cronbach&#39;s alpha.</span>
+
+<span class="sd">    The Cronbach coefficient quantifying interrater agreement.</span>
+<span class="sd">    Returns alpha as a float</span>
+<span class="sd">    and additional information specific to this measure</span>
+<span class="sd">    collated into a dictionary.</span>
+
+<span class="sd">    Cronbach&#39;s alpha generalizes Cohen&#39;s kappa</span>
+<span class="sd">    and can handle three or more answers per variable.</span>
+<span class="sd">    It is suitable for Likert type scale answers.</span>
+<span class="sd">    A `blogpost on congeneric reliability`_ states</span>
+<span class="sd">    that Cronbach’s alpha assumes essential tau-equivalence</span>
+<span class="sd">    and underestimates reliability.</span>
+<span class="sd">    A tau-equivalent measurement model</span>
+<span class="sd">    is a special case of a congeneric measurement model</span>
+<span class="sd">    with all loadings equal :cite:p:`cronbach-alpha-wikipedia`.</span>
+
+<span class="sd">    A simplified formula is given in :cite:t:`Hilsdorf`</span>
+<span class="sd">    that relates the measure to the average reliability:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \alpha_{st} = \frac{N \times \bar{r}} {1 + (N - 1) \times \bar{r}}</span>
+
+<span class="sd">    where</span>
+
+<span class="sd">       - :math:`N` is the number of items (labelled chunks)</span>
+<span class="sd">       - :math:`\bar{r}` is the average correlation between the items</span>
+
+<span class="sd">    .. _blogpost on congeneric reliability: http://evaluationdashboard.com/index.php/2012/09/22/congeneric_reliability_r/</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: ratings.</span>
+<span class="sd">            When given as a 1-dimensional array,</span>
+<span class="sd">            it is treated as a row vector</span>
+<span class="sd">        axis: axis along which the rater confidence is computed.</span>
+<span class="sd">            A value of ``1``</span>
+<span class="sd">            assumes stimuli as rows</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">         Cronbach&#39;s alpha and additional results lumped into dict</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">))</span>
+    <span class="n">n_items</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>  <span class="c1"># K</span>
+    <span class="n">total_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>  <span class="c1"># X = ∑ Y_i</span>
+    <span class="n">variance_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span> <span class="o">-</span> <span class="n">axis</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># ∑ var(Y_i)</span>
+    <span class="n">total_variance</span> <span class="o">=</span> <span class="n">total_score</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># var(X)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">n_items</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_items</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">variance_sum</span> <span class="o">/</span> <span class="n">total_variance</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;total_variance&quot;</span><span class="p">:</span> <span class="n">total_variance</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="congeneric_reliability"><a class="viewcode-back" href="../../../api/audpsychometric.congeneric_reliability.html#audpsychometric.congeneric_reliability">[docs]</a><span class="k">def</span> <span class="nf">congeneric_reliability</span><span class="p">(</span>
+    <span class="n">ratings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Congeneric reliability coefficient.</span>
+
+<span class="sd">    Extracts the first Principal Component as a measurement model</span>
+<span class="sd">    and extracts the congeneric reliability coefficient.</span>
+<span class="sd">    The implementation here is specific</span>
+<span class="sd">    for a Principal Component Analysis with one factor.</span>
+<span class="sd">    For implementation details see the wikipedia</span>
+<span class="sd">    :cite:p:`congeneric-reliability-wikipedia`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: ratings.</span>
+<span class="sd">            When given as a 1-dimensional array,</span>
+<span class="sd">            it is treated as a row vector</span>
+<span class="sd">        axis: axis along which the rater confidence is computed.</span>
+<span class="sd">            A value of ``1``</span>
+<span class="sd">            assumes stimuli as rows</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Congeneric Reliability and additional results lumped into dict</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ratings</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">pca</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">decomposition</span><span class="o">.</span><span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span>
+    <span class="n">loadings</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">components_</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_</span><span class="p">)</span>  <span class="c1"># λ_i</span>
+    <span class="n">loadings_sum</span> <span class="o">=</span> <span class="n">loadings</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># (∑ λ_i)²</span>
+    <span class="n">total_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># X = ∑ Y_i</span>
+    <span class="n">total_variance</span> <span class="o">=</span> <span class="n">total_score</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># var(X)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;var. explained&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
+    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;sing. values&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">singular_values_</span>
+
+    <span class="n">reliability</span> <span class="o">=</span> <span class="n">loadings_sum</span> <span class="o">/</span> <span class="n">total_variance</span>
+    <span class="k">return</span> <span class="n">reliability</span><span class="p">,</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="intra_class_correlation"><a class="viewcode-back" href="../../../api/audpsychometric.intra_class_correlation.html#audpsychometric.intra_class_correlation">[docs]</a><span class="k">def</span> <span class="nf">intra_class_correlation</span><span class="p">(</span>
+    <span class="n">ratings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">icc_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ICC_1_1&quot;</span><span class="p">,</span>
+    <span class="n">anova_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pingouin&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Intraclass Correlation.</span>
+
+<span class="sd">    Intraclass correlation calculates rating reliability by relating</span>
+<span class="sd">    (i) variability of different ratings of the same subject to</span>
+<span class="sd">    (ii) the total variation across all ratings and all items.</span>
+
+<span class="sd">    The model is based on analysis of variance,</span>
+<span class="sd">    and ratings must at least be ordinally scaled.</span>
+
+<span class="sd">    CCC_ is conceptually and numerically related to the ICC.</span>
+<span class="sd">    For an implementation see :func:`audmetric.concordance_cc`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: ratings.</span>
+<span class="sd">            When given as a 1-dimensional array,</span>
+<span class="sd">            it is treated as a row vector</span>
+<span class="sd">        axis: axis along which the rater confidence is computed.</span>
+<span class="sd">            A value of ``1``</span>
+<span class="sd">            assumes stimuli as rows</span>
+<span class="sd">        icc_type: ICC Method, see description below</span>
+<span class="sd">        anova_method: method for ANOVA calculation,</span>
+<span class="sd">            can be ``&quot;pingouin&quot;`` or ``&quot;statsmodels&quot;``</span>
+
+<span class="sd">    .. _CCC: https://en.wikipedia.org/wiki/Concordance_correlation_coefficient</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        icc and additional results lumped into dict</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        :cite:ts:`Shrout/Fleiss:1979`</span>
+<span class="sd">        describe a whole family of forms of coefficients</span>
+<span class="sd">        that must be selected according</span>
+<span class="sd">        to following criteria :cite:t:`Koo/Li:2016`:</span>
+
+<span class="sd">        **Parametrization**</span>
+
+<span class="sd">        :cite:t:`Koo/Li:2016` detail the parametrization:</span>
+
+<span class="sd">        *Rater type: 1 versus k raters:*</span>
+
+<span class="sd">        &quot;This selection depends</span>
+<span class="sd">        on how the measurement protocol</span>
+<span class="sd">        will be conducted in actual application.</span>
+<span class="sd">        For instance,</span>
+<span class="sd">        if we plan to use the mean value of 3 raters as an assessment basis,</span>
+<span class="sd">        the experimental design of the reliability study</span>
+<span class="sd">        should involve 3 raters,</span>
+<span class="sd">        and the &#39;mean of k raters&#39; type should be selected.</span>
+
+<span class="sd">        *Rating definition: absolute or consistency*</span>
+
+<span class="sd">        &quot;For both 2-way random- and 2-way mixed-effects models,</span>
+<span class="sd">        there are 2 ICC definitions:</span>
+<span class="sd">        “absolute agreement” and “consistency.”</span>
+<span class="sd">        Selection of the ICC definition</span>
+<span class="sd">        depends on whether we consider absolute agreement</span>
+<span class="sd">        or consistency between raters to be more important.</span>
+<span class="sd">        Absolute agreement concerns</span>
+<span class="sd">        if different raters assign the same score</span>
+<span class="sd">        to the same subject.</span>
+<span class="sd">        Conversely,</span>
+<span class="sd">        consistency definition concerns</span>
+<span class="sd">        if raters’ scores to the same group of subjects</span>
+<span class="sd">        are correlated in an additive manner.</span>
+<span class="sd">        Consider an interrater reliability study of 2 raters as an example.</span>
+<span class="sd">        In this case,</span>
+<span class="sd">        consistency definition concerns the degree</span>
+<span class="sd">        to which one rater’s score (y)</span>
+<span class="sd">        can be equated to another rater’s score (x)</span>
+<span class="sd">        plus a systematic error (c)</span>
+<span class="sd">        (ie, :math:`y = x + c`),</span>
+<span class="sd">        whereas absolute agreement</span>
+<span class="sd">        concerns about the extent to which y equals x.</span>
+
+<span class="sd">        *Model Choice*</span>
+
+<span class="sd">        - One-Way Random-Effects Model</span>
+<span class="sd">            In this model,</span>
+<span class="sd">            each subject is rated by a different set of raters</span>
+<span class="sd">            who were randomly chosen</span>
+<span class="sd">            from a larger population of possible raters.</span>
+<span class="sd">            This is used when different sets of raters rate different items</span>
+<span class="sd">        - Two-Way Random-Effects Model</span>
+<span class="sd">            If we randomly select our raters</span>
+<span class="sd">            from a larger population of raters</span>
+<span class="sd">            with similar characteristics</span>
+<span class="sd">        - Two-Way Mixed-Effects Model</span>
+<span class="sd">            We should use the 2-way mixed-effects model</span>
+<span class="sd">            if the selected raters are the only raters of interest</span>
+
+<span class="sd">        .. table::</span>
+
+<span class="sd">            +----------------------+------------+--------------------+------------------------+</span>
+<span class="sd">            | Parametrization      | Rater Type | Rating definition  | Model Choice           |</span>
+<span class="sd">            +======================+============+====================+========================+</span>
+<span class="sd">            | ICC(1,1) - icc\_1\_1 | single     | absolute agreement | One-way random effects |</span>
+<span class="sd">            +----------------------+------------+--------------------+------------------------+</span>
+<span class="sd">            | ICC(2,1) - icc\_2\_1 | single     | absolute agreement | Two-way random effects |</span>
+<span class="sd">            +----------------------+------------+--------------------+------------------------+</span>
+<span class="sd">            | ICC(3,1) - icc\_3\_1 | single     | consistency        | Two-way mixed effects  |</span>
+<span class="sd">            +----------------------+------------+--------------------+------------------------+</span>
+<span class="sd">            | ICC(1,k) - icc\_2\_k | k          | absolute agreement | One-way random effects |</span>
+<span class="sd">            +----------------------+------------+--------------------+------------------------+</span>
+<span class="sd">            | ICC(2,k) - icc\_2\_k | k          | absolute agreement | Two-way random effects |</span>
+<span class="sd">            +----------------------+------------+--------------------+------------------------+</span>
+<span class="sd">            | ICC(3,k) - icc\_3\_k | k          | consistency        | Two-way mixed effects  |</span>
+<span class="sd">            +----------------------+------------+--------------------+------------------------+</span>
+
+<span class="sd">        **Interpretation**</span>
+
+<span class="sd">        Interpretation Conventions vary a between several sources,</span>
+<span class="sd">        and depend also on the use case.</span>
+<span class="sd">        We list values from the papers of :cite:ts:`Hallgren:2012`</span>
+<span class="sd">        and :cite:ts:`Koo/Li:2016` respectively:</span>
+
+<span class="sd">        .. table::</span>
+
+<span class="sd">            +-----------+----------------+</span>
+<span class="sd">            | Value     | Interpretation |</span>
+<span class="sd">            +===========+================+</span>
+<span class="sd">            | &lt; 0.4     | poor           |</span>
+<span class="sd">            +-----------+----------------+</span>
+<span class="sd">            | .40 - .59 | fair           |</span>
+<span class="sd">            +-----------+----------------+</span>
+<span class="sd">            | .60 - .74 | good           |</span>
+<span class="sd">            +-----------+----------------+</span>
+<span class="sd">            | .75 - 1.0 | excellent      |</span>
+<span class="sd">            +-----------+----------------+</span>
+
+<span class="sd">        .. table::</span>
+
+<span class="sd">            +-----------+----------------+</span>
+<span class="sd">            | Value     | Interpretation |</span>
+<span class="sd">            +===========+================+</span>
+<span class="sd">            | &lt; 0.5     | poor           |</span>
+<span class="sd">            +-----------+----------------+</span>
+<span class="sd">            | .50 - .75 | moderate       |</span>
+<span class="sd">            +-----------+----------------+</span>
+<span class="sd">            | .75 - .9  | good           |</span>
+<span class="sd">            +-----------+----------------+</span>
+<span class="sd">            | &gt;.9 - 1.0 | excellent      |</span>
+<span class="sd">            +-----------+----------------+</span>
+
+<span class="sd">        **Formulas**:</span>
+
+<span class="sd">        Shrout &amp; Fleiss formula (1979, p. 423ff):</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">          \text{ICC}(1,1) = \frac{(\text{bms} - \text{wms})}{ (\text{bms} + (k - 1) * \text{wms})}</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">          \text{ICC}(2,1) = \frac{(\text{bms} - \text{ems})}{ (\text{bms} + (k - 1) * \text{ems} + k * (\text{jms} - \text{ems}) / n)}</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">          \text{ICC}(3,1) = \frac {(\text{bms} - \text{ems})}{ (\text{bms} + (k - 1) * \text{ems})}</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">          \text{ICC}(1,k) = \frac{(\text{bms} - \text{wms})}{\text{bms}}</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">          \text{ICC}(2,k) = \frac{(\text{bms} - \text{ems})}{ (\text{bms} + (\text{jms} - \text{ems}) / n)}</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">          \text{ICC}(3,k) = \frac{(\text{bms} - \text{ems})}{\text{bms}}</span>
+
+<span class="sd">        where</span>
+
+<span class="sd">        - :math:`\text{bms}` is the between items (&quot;targets&quot;)</span>
+<span class="sd">          mean sqeare of the underlying 2-factor Anova</span>
+<span class="sd">        - :math:`\text{wms}` is the within items (&quot;target&quot;) mean square</span>
+<span class="sd">        - :math:`\text{jms}` is the between raters (&quot;judges&quot;)</span>
+<span class="sd">          mean square of the underlying 2-factor Anova</span>
+<span class="sd">        - :math:`\text{ems}` is the error/residual mean square</span>
+<span class="sd">        - :math:`k` is the number of raters</span>
+<span class="sd">        - :math:`n` is the number of items</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">ratings</span>
+
+    <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span> <span class="nf">_anova</span><span class="p">(</span><span class="n">df_long</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">anova_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pingouin&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper to get the anova table.</span>
+
+<span class="sd">        Note that pingouin is currently default as statsmodels.</span>
+<span class="sd">        ols from the statsmodels package is slow under many circumstances</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">anova_methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;statsmodels&quot;</span><span class="p">,</span> <span class="s2">&quot;pingouin&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">anova_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">anova_methods</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Anova method &#39;</span><span class="si">{</span><span class="n">anova_method</span><span class="si">}</span><span class="s2">&#39; not in </span><span class="si">{</span><span class="n">anova_methods</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">anova_method</span> <span class="o">==</span> <span class="s2">&quot;pingouin&quot;</span><span class="p">:</span>
+            <span class="c1"># calculate and remap</span>
+            <span class="n">anova_table</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">anova</span><span class="p">(</span>
+                <span class="n">data_long</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">,</span> <span class="n">between</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="s2">&quot;rater&quot;</span><span class="p">],</span> <span class="n">ss_type</span><span class="o">=</span><span class="mi">2</span>
+            <span class="p">)</span>
+            <span class="n">anova_table</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Source&quot;</span><span class="p">,</span> <span class="s2">&quot;sum_sq&quot;</span><span class="p">,</span> <span class="s2">&quot;df&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_sq&quot;</span><span class="p">,</span> <span class="s2">&quot;np2&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">anova_table</span>
+            <span class="c1"># aov_pg for wine:</span>
+            <span class="c1"># Source         SS  DF         MS  np2</span>
+            <span class="c1"># 0          item  188.21875   7  26.888393  1.0</span>
+            <span class="c1"># 1         rater    7.34375   3   2.447917  1.0</span>
+            <span class="c1"># 2  item * rater   47.90625  21   2.281250  1.0</span>
+            <span class="c1"># 3      Residual    0.00000   0        NaN  NaN</span>
+        <span class="k">elif</span> <span class="n">anova_method</span> <span class="o">==</span> <span class="s2">&quot;statsmodels&quot;</span><span class="p">:</span>
+            <span class="n">formula</span> <span class="o">=</span> <span class="s2">&quot;rating ~ C(item) * rater&quot;</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">statsmodels</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data_long</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+            <span class="n">anova_table</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">anova_lm</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">anova_table</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">anova_lm</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">anova_table</span>
+            <span class="c1"># (Pdb) anova_table ols for wine</span>
+            <span class="c1">#                  df        sum_sq    mean_sq    F  PR(&gt;F)</span>
+            <span class="c1"># C(item)         7.0  1.882188e+02  26.888393  0.0     NaN</span>
+            <span class="c1"># rater           3.0  7.343750e+00   2.447917  0.0     NaN</span>
+            <span class="c1"># C(item):rater  21.0  4.790625e+01   2.281250  0.0     NaN</span>
+            <span class="c1"># Residual        0.0  9.138719e-27        inf  NaN     NaN</span>
+            <span class="c1"># data must be (5152, 3)</span>
+        <span class="k">elif</span> <span class="n">anova_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">anova_methods</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Undefined Anova method!&quot;</span><span class="p">)</span>
+
+    <span class="c1"># data_long = df.reset_index().melt(id_vars=targets, value_name=ratings)</span>
+    <span class="c1"># data_long = df.melt(ignore_index=False)</span>
+    <span class="n">data_long</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="s2">&quot;rater&quot;</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">)</span>
+    <span class="n">data_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_long</span><span class="o">.</span><span class="n">index</span>
+
+    <span class="c1"># convert back to wide format to see how many raters dropped:</span>
+    <span class="n">data_wide</span> <span class="o">=</span> <span class="n">data_long</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;rater&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span><span class="p">)</span>
+
+    <span class="c1"># delete missing data in listwise manner</span>
+    <span class="n">nan_count</span> <span class="o">=</span> <span class="n">data_wide</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We have </span><span class="si">{</span><span class="n">nan_count</span><span class="si">}</span><span class="s2"> missing data points&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deleting them!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nan_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">data_wide</span> <span class="o">=</span> <span class="n">data_wide</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;any&quot;</span><span class="p">)</span>
+
+    <span class="c1"># back to long</span>
+    <span class="n">data_long</span> <span class="o">=</span> <span class="n">data_wide</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+        <span class="n">ignore_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">var_name</span><span class="o">=</span><span class="s2">&quot;rater&quot;</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;rating&quot;</span>
+    <span class="p">)</span>
+    <span class="n">data_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_long</span><span class="o">.</span><span class="n">index</span>
+    <span class="c1"># drop missing</span>
+    <span class="n">data_long</span> <span class="o">=</span> <span class="n">data_long</span><span class="p">[</span><span class="n">data_long</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="n">data_long</span> <span class="o">=</span> <span class="n">data_long</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">anova_table</span> <span class="o">=</span> <span class="n">_anova</span><span class="p">(</span><span class="n">data_long</span><span class="p">,</span> <span class="n">anova_method</span><span class="o">=</span><span class="n">anova_method</span><span class="p">)</span>
+
+    <span class="n">bms</span> <span class="o">=</span> <span class="n">anova_table</span><span class="p">[</span><span class="s2">&quot;mean_sq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">wms</span> <span class="o">=</span> <span class="p">(</span><span class="n">anova_table</span><span class="p">[</span><span class="s2">&quot;sum_sq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">anova_table</span><span class="p">[</span><span class="s2">&quot;sum_sq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span>
+        <span class="n">anova_table</span><span class="p">[</span><span class="s2">&quot;df&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">anova_table</span><span class="p">[</span><span class="s2">&quot;df&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">jms</span> <span class="o">=</span> <span class="n">anova_table</span><span class="p">[</span><span class="s2">&quot;mean_sq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ems</span> <span class="o">=</span> <span class="n">anova_table</span><span class="p">[</span><span class="s2">&quot;mean_sq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">k</span> <span class="o">=</span> <span class="n">data_long</span><span class="p">[</span><span class="s2">&quot;rater&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">data_long</span><span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+
+    <span class="c1"># Calculate ICCs</span>
+    <span class="c1"># Shrout &amp; Fleiss Formula ICC(1,1), p. 423</span>
+    <span class="n">icc_1_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">bms</span> <span class="o">-</span> <span class="n">wms</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">bms</span> <span class="o">+</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">wms</span><span class="p">)</span>
+    <span class="c1"># Shrout &amp; Fleiss Formula ICC(2,1), p. 423</span>
+    <span class="n">icc_2_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">bms</span> <span class="o">-</span> <span class="n">ems</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">bms</span> <span class="o">+</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">ems</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">jms</span> <span class="o">-</span> <span class="n">ems</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+    <span class="c1"># Shrout &amp; Fleiss Formula ICC(3,1), p. 423</span>
+    <span class="n">icc_3_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">bms</span> <span class="o">-</span> <span class="n">ems</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">bms</span> <span class="o">+</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">ems</span><span class="p">)</span>
+    <span class="c1"># Shrout &amp; Fleiss Formula ICC(1,k), p. 42x</span>
+    <span class="n">icc_1_k</span> <span class="o">=</span> <span class="p">(</span><span class="n">bms</span> <span class="o">-</span> <span class="n">wms</span><span class="p">)</span> <span class="o">/</span> <span class="n">bms</span>
+    <span class="c1"># Shrout &amp; Fleiss Formula ICC(2,k), p. 42x</span>
+    <span class="n">icc_2_k</span> <span class="o">=</span> <span class="p">(</span><span class="n">bms</span> <span class="o">-</span> <span class="n">ems</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">bms</span> <span class="o">+</span> <span class="p">(</span><span class="n">jms</span> <span class="o">-</span> <span class="n">ems</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+    <span class="c1"># Shrout &amp; Fleiss Formula ICC(3,k), p. 42x</span>
+    <span class="n">icc_3_k</span> <span class="o">=</span> <span class="p">(</span><span class="n">bms</span> <span class="o">-</span> <span class="n">ems</span><span class="p">)</span> <span class="o">/</span> <span class="n">bms</span>
+
+    <span class="c1"># Create output dataframe</span>
+    <span class="c1"># stats = {</span>
+    <span class="n">icc_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ICC_1_1&quot;</span><span class="p">,</span> <span class="s2">&quot;ICC_2_1&quot;</span><span class="p">,</span> <span class="s2">&quot;ICC_3_1&quot;</span><span class="p">,</span> <span class="s2">&quot;ICC_1_k&quot;</span><span class="p">,</span> <span class="s2">&quot;ICC_2_k&quot;</span><span class="p">,</span> <span class="s2">&quot;ICC_3_k&quot;</span><span class="p">]</span>
+    <span class="n">icc_rater_type</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="s2">&quot;single&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="s2">&quot;average&quot;</span><span class="p">]</span>
+    <span class="n">icc_rating_type</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;absolute&quot;</span><span class="p">,</span> <span class="s2">&quot;consistency&quot;</span><span class="p">,</span> <span class="s2">&quot;consistency&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">icc_effect_type</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="s2">&quot;fixed&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">icc</span> <span class="o">=</span> <span class="p">[</span><span class="n">icc_1_1</span><span class="p">,</span> <span class="n">icc_2_1</span><span class="p">,</span> <span class="n">icc_3_1</span><span class="p">,</span> <span class="n">icc_1_k</span><span class="p">,</span> <span class="n">icc_2_k</span><span class="p">,</span> <span class="n">icc_3_k</span><span class="p">]</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">icc_types</span><span class="p">,</span> <span class="n">icc_rater_type</span><span class="p">,</span> <span class="n">icc_rating_type</span><span class="p">,</span> <span class="n">icc_effect_type</span><span class="p">,</span> <span class="n">icc</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="nb">vars</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;icc_type&quot;</span><span class="p">,</span> <span class="s2">&quot;rater type&quot;</span><span class="p">,</span> <span class="s2">&quot;rating type&quot;</span><span class="p">,</span> <span class="s2">&quot;anova effect type&quot;</span><span class="p">,</span> <span class="s2">&quot;icc&quot;</span><span class="p">]</span>
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">icc_types</span><span class="p">,</span> <span class="n">icc_rater_type</span><span class="p">,</span> <span class="n">icc_rating_type</span><span class="p">,</span> <span class="n">icc_effect_type</span><span class="p">,</span> <span class="n">icc</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="nb">vars</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">results_table</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="s2">&quot;records&quot;</span><span class="p">)</span>
+
+    <span class="c1">#     &quot;Description&quot;: [</span>
+    <span class="c1">#         &quot;Single raters absolute&quot;,</span>
+    <span class="c1">#         &quot;Single random raters&quot;,</span>
+    <span class="c1">#         &quot;Single fixed raters&quot;,</span>
+    <span class="c1">#         &quot;Average raters absolute&quot;,</span>
+    <span class="c1">#         &quot;Average random raters&quot;,</span>
+    <span class="c1">#         &quot;Average fixed raters&quot;,</span>
+    <span class="c1">#     ],</span>
+    <span class="c1">#     &quot;ICC&quot;: [icc_1_1, icc_2_1, icc_3_1, icc_1_k, icc_2_k, icc_3_k],</span>
+    <span class="c1"># }</span>
+
+    <span class="n">icc_dict</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results_table</span> <span class="k">if</span> <span class="n">icc_type</span> <span class="o">==</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;icc_type&quot;</span><span class="p">]]</span>
+    <span class="n">icc</span> <span class="o">=</span> <span class="n">icc_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;icc&quot;</span><span class="p">]</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;icc_dict&quot;</span><span class="p">:</span> <span class="n">icc_dict</span><span class="p">,</span>
+        <span class="s2">&quot;results_table&quot;</span><span class="p">:</span> <span class="n">results_table</span><span class="p">,</span>
+        <span class="s2">&quot;anova_table&quot;</span><span class="p">:</span> <span class="n">anova_table</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">icc</span><span class="p">,</span> <span class="n">results</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div>
+      
+      
+      
+      
+      
+      
+      
+      
+        <ul>
+          <li><a href="http://data.pp.audeering.com">Data</a></li>
+          <li><a href="http://devops.pp.audeering.com/sphinx/">Docs</a></li>
+          <li><a href="http://devops.pp.audeering.com/">Infra</a></li>
+          <li><a href="http://models.pp.audeering.com">Models</a></li>
+          <li><a href="http://research.pp.audeering.com">Research</a></li>
+          <li><a href="http://tools.pp.audeering.com">Tools</a></li>
+        </ul>
+      
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+﻿read\_dataset\(\)
+=================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.read_dataset

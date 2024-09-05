@@ -1,0 +1,480 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>intra_class_correlation() &mdash; Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="list_datasets()" href="audpsychometric.list_datasets.html" />
+    <link rel="prev" title="evaluator_weighted_estimator()" href="audpsychometric.evaluator_weighted_estimator.html" />
+    
+  
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../index.html">
+          
+            <img src="../_static/images/audeering.png" class="logo" alt="audEERING"/>
+          
+          
+            <span> audpsychometric</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="audpsychometric.html">audpsychometric</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.agreement_categorical.html">agreement_categorical()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.agreement_numerical.html">agreement_numerical()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.cronbachs_alpha.html">cronbachs_alpha()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.congeneric_reliability.html">congeneric_reliability()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.evaluator_weighted_estimator.html">evaluator_weighted_estimator()</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">intra_class_correlation()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.list_datasets.html">list_datasets()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.mode.html">mode()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.rater_agreement.html">rater_agreement()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.read_dataset.html">read_dataset()</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">audpsychometric</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="audpsychometric.html">audpsychometric</a> &raquo;</li>
+      <li>intra_class_correlation()</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://gitlab.audeering.com/audeering/audpsychometric/" class="fa fa-gitlab"> GitLab</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="intra-class-correlation">
+<h1>intra_class_correlation()<a class="headerlink" href="#intra-class-correlation" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="audpsychometric.intra_class_correlation">
+<span class="sig-prename descclassname"><span class="pre">audpsychometric.</span></span><span class="sig-name descname"><span class="pre">intra_class_correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icc_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ICC_1_1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anova_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pingouin'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audpsychometric/core/reliability.html#intra_class_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audpsychometric.intra_class_correlation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intraclass Correlation.</p>
+<p>Intraclass correlation calculates rating reliability by relating
+(i) variability of different ratings of the same subject to
+(ii) the total variation across all ratings and all items.</p>
+<p>The model is based on analysis of variance,
+and ratings must at least be ordinally scaled.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Concordance_correlation_coefficient">CCC</a> is conceptually and numerically related to the ICC.
+For an implementation see <a class="reference external" href="https://audeering.github.io/audmetric/api/audmetric.concordance_cc.html#audmetric.concordance_cc" title="(in audmetric vv1.2.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">audmetric.concordance_cc()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ratings</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – ratings.
+When given as a 1-dimensional array,
+it is treated as a row vector</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – axis along which the rater confidence is computed.
+A value of <code class="docutils literal notranslate"><span class="pre">1</span></code>
+assumes stimuli as rows</p></li>
+<li><p><strong>icc_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – ICC Method, see description below</p></li>
+<li><p><strong>anova_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – method for ANOVA calculation,
+can be <code class="docutils literal notranslate"><span class="pre">&quot;pingouin&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;statsmodels&quot;</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>icc and additional results lumped into dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p><span id="id1">Shrout and Fleiss [<a class="reference internal" href="../bibliography.html#id4" title="P. E. Shrout and J. L. Fleiss. Intraclass correlations: uses in assessing rater reliability. Psychological Bulletin, 86(2):420–428, 1979.">SF79</a>]</span>
+describe a whole family of forms of coefficients
+that must be selected according
+to following criteria <span id="id2">Koo and Li [<a class="reference internal" href="../bibliography.html#id3" title="Terry K. Koo and Mae Y. Li. A guideline of selecting and reporting intraclass correlation coefficients for reliability research. Journal of Chiropractic Medicine, 15:155–163, 2016.">KL16</a>]</span>:</p>
+<p><strong>Parametrization</strong></p>
+<p><span id="id3">Koo and Li [<a class="reference internal" href="../bibliography.html#id3" title="Terry K. Koo and Mae Y. Li. A guideline of selecting and reporting intraclass correlation coefficients for reliability research. Journal of Chiropractic Medicine, 15:155–163, 2016.">KL16</a>]</span> detail the parametrization:</p>
+<p><em>Rater type: 1 versus k raters:</em></p>
+<p>“This selection depends
+on how the measurement protocol
+will be conducted in actual application.
+For instance,
+if we plan to use the mean value of 3 raters as an assessment basis,
+the experimental design of the reliability study
+should involve 3 raters,
+and the ‘mean of k raters’ type should be selected.</p>
+<p><em>Rating definition: absolute or consistency</em></p>
+<p>“For both 2-way random- and 2-way mixed-effects models,
+there are 2 ICC definitions:
+“absolute agreement” and “consistency.”
+Selection of the ICC definition
+depends on whether we consider absolute agreement
+or consistency between raters to be more important.
+Absolute agreement concerns
+if different raters assign the same score
+to the same subject.
+Conversely,
+consistency definition concerns
+if raters’ scores to the same group of subjects
+are correlated in an additive manner.
+Consider an interrater reliability study of 2 raters as an example.
+In this case,
+consistency definition concerns the degree
+to which one rater’s score (y)
+can be equated to another rater’s score (x)
+plus a systematic error (c)
+(ie, <span class="math notranslate nohighlight">\(y = x + c\)</span>),
+whereas absolute agreement
+concerns about the extent to which y equals x.</p>
+<p><em>Model Choice</em></p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>One-Way Random-Effects Model</dt><dd><p>In this model,
+each subject is rated by a different set of raters
+who were randomly chosen
+from a larger population of possible raters.
+This is used when different sets of raters rate different items</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Two-Way Random-Effects Model</dt><dd><p>If we randomly select our raters
+from a larger population of raters
+with similar characteristics</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Two-Way Mixed-Effects Model</dt><dd><p>We should use the 2-way mixed-effects model
+if the selected raters are the only raters of interest</p>
+</dd>
+</dl>
+</li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 15%" />
+<col style="width: 26%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parametrization</p></th>
+<th class="head"><p>Rater Type</p></th>
+<th class="head"><p>Rating definition</p></th>
+<th class="head"><p>Model Choice</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ICC(1,1) - icc_1_1</p></td>
+<td><p>single</p></td>
+<td><p>absolute agreement</p></td>
+<td><p>One-way random effects</p></td>
+</tr>
+<tr class="row-odd"><td><p>ICC(2,1) - icc_2_1</p></td>
+<td><p>single</p></td>
+<td><p>absolute agreement</p></td>
+<td><p>Two-way random effects</p></td>
+</tr>
+<tr class="row-even"><td><p>ICC(3,1) - icc_3_1</p></td>
+<td><p>single</p></td>
+<td><p>consistency</p></td>
+<td><p>Two-way mixed effects</p></td>
+</tr>
+<tr class="row-odd"><td><p>ICC(1,k) - icc_2_k</p></td>
+<td><p>k</p></td>
+<td><p>absolute agreement</p></td>
+<td><p>One-way random effects</p></td>
+</tr>
+<tr class="row-even"><td><p>ICC(2,k) - icc_2_k</p></td>
+<td><p>k</p></td>
+<td><p>absolute agreement</p></td>
+<td><p>Two-way random effects</p></td>
+</tr>
+<tr class="row-odd"><td><p>ICC(3,k) - icc_3_k</p></td>
+<td><p>k</p></td>
+<td><p>consistency</p></td>
+<td><p>Two-way mixed effects</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation</strong></p>
+<p>Interpretation Conventions vary a between several sources,
+and depend also on the use case.
+We list values from the papers of <span id="id4">Hallgren [<a class="reference internal" href="../bibliography.html#id2" title="Kevin A. Hallgren. Computing inter-rater reliability for observational data: an overview and tutorial. Tutor Quant Methods Psychol., 8(1):23–34, 2012.">Hal12</a>]</span>
+and <span id="id5">Koo and Li [<a class="reference internal" href="../bibliography.html#id3" title="Terry K. Koo and Mae Y. Li. A guideline of selecting and reporting intraclass correlation coefficients for reliability research. Journal of Chiropractic Medicine, 15:155–163, 2016.">KL16</a>]</span> respectively:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Interpretation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>&lt; 0.4</p></td>
+<td><p>poor</p></td>
+</tr>
+<tr class="row-odd"><td><p>.40 - .59</p></td>
+<td><p>fair</p></td>
+</tr>
+<tr class="row-even"><td><p>.60 - .74</p></td>
+<td><p>good</p></td>
+</tr>
+<tr class="row-odd"><td><p>.75 - 1.0</p></td>
+<td><p>excellent</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Value</p></th>
+<th class="head"><p>Interpretation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>&lt; 0.5</p></td>
+<td><p>poor</p></td>
+</tr>
+<tr class="row-odd"><td><p>.50 - .75</p></td>
+<td><p>moderate</p></td>
+</tr>
+<tr class="row-even"><td><p>.75 - .9</p></td>
+<td><p>good</p></td>
+</tr>
+<tr class="row-odd"><td><p>&gt;.9 - 1.0</p></td>
+<td><p>excellent</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Formulas</strong>:</p>
+<p>Shrout &amp; Fleiss formula (1979, p. 423ff):</p>
+<div class="math notranslate nohighlight">
+\[\text{ICC}(1,1) = \frac{(\text{bms} - \text{wms})}{ (\text{bms} + (k - 1) * \text{wms})}\]</div>
+<div class="math notranslate nohighlight">
+\[\text{ICC}(2,1) = \frac{(\text{bms} - \text{ems})}{ (\text{bms} + (k - 1) * \text{ems} + k * (\text{jms} - \text{ems}) / n)}\]</div>
+<div class="math notranslate nohighlight">
+\[\text{ICC}(3,1) = \frac {(\text{bms} - \text{ems})}{ (\text{bms} + (k - 1) * \text{ems})}\]</div>
+<div class="math notranslate nohighlight">
+\[\text{ICC}(1,k) = \frac{(\text{bms} - \text{wms})}{\text{bms}}\]</div>
+<div class="math notranslate nohighlight">
+\[\text{ICC}(2,k) = \frac{(\text{bms} - \text{ems})}{ (\text{bms} + (\text{jms} - \text{ems}) / n)}\]</div>
+<div class="math notranslate nohighlight">
+\[\text{ICC}(3,k) = \frac{(\text{bms} - \text{ems})}{\text{bms}}\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\text{bms}\)</span> is the between items (“targets”)
+mean sqeare of the underlying 2-factor Anova</p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{wms}\)</span> is the within items (“target”) mean square</p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{jms}\)</span> is the between raters (“judges”)
+mean square of the underlying 2-factor Anova</p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{ems}\)</span> is the error/residual mean square</p></li>
+<li><p><span class="math notranslate nohighlight">\(k\)</span> is the number of raters</p></li>
+<li><p><span class="math notranslate nohighlight">\(n\)</span> is the number of items</p></li>
+</ul>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="audpsychometric.list_datasets.html" class="btn btn-neutral float-right" title="list_datasets()" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="audpsychometric.evaluator_weighted_estimator.html" class="btn btn-neutral float-left" title="evaluator_weighted_estimator()" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+      
+      
+      
+      
+      
+      
+      
+      
+        <ul>
+          <li><a href="http://data.pp.audeering.com">Data</a></li>
+          <li><a href="http://devops.pp.audeering.com/sphinx/">Docs</a></li>
+          <li><a href="http://devops.pp.audeering.com/">Infra</a></li>
+          <li><a href="http://models.pp.audeering.com">Models</a></li>
+          <li><a href="http://research.pp.audeering.com">Research</a></li>
+          <li><a href="http://tools.pp.audeering.com">Tools</a></li>
+        </ul>
+      
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+﻿agreement\_categorical\(\)
+==========================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.agreement_categorical

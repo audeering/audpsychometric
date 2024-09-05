@@ -1,0 +1,6 @@
+﻿congeneric\_reliability\(\)
+===========================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.congeneric_reliability

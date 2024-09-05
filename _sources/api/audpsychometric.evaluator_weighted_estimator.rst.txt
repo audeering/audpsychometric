@@ -1,0 +1,6 @@
+﻿evaluator\_weighted\_estimator\(\)
+==================================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.evaluator_weighted_estimator

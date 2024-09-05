@@ -1,0 +1,6 @@
+﻿intra\_class\_correlation\(\)
+=============================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.intra_class_correlation

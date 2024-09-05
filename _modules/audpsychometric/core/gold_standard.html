@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>audpsychometric.core.gold_standard &mdash; Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    
+  
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../../../index.html">
+          
+            <img src="../../../_static/images/audeering.png" class="logo" alt="audEERING"/>
+          
+          
+            <span> audpsychometric</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/audpsychometric.html">audpsychometric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../bibliography.html">Bibliography</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">audpsychometric</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>audpsychometric.core.gold_standard</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for audpsychometric.core.gold_standard</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">audmetric</span>
+
+
+<div class="viewcode-block" id="agreement_categorical"><a class="viewcode-back" href="../../../api/audpsychometric.agreement_categorical.html#audpsychometric.agreement_categorical">[docs]</a><span class="k">def</span> <span class="nf">agreement_categorical</span><span class="p">(</span>
+    <span class="n">ratings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Confidence score for categorical ratings.</span>
+
+<span class="sd">    The agreement for categorical data</span>
+<span class="sd">    is given by the fraction of raters per item</span>
+<span class="sd">    with the rating being equal to the mode</span>
+<span class="sd">    given by :func:`audpsychometric.mode`.</span>
+<span class="sd">    ``None`` and ``nan`` values are ignored per item.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: ratings.</span>
+<span class="sd">            When given as a 1-dimensional array,</span>
+<span class="sd">            it is treated as a row vector</span>
+<span class="sd">        axis: axis along which the agreement is computed.</span>
+<span class="sd">            A value of ``1``</span>
+<span class="sd">            assumes stimuli as rows</span>
+<span class="sd">            and raters as columns</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        categorical agreement score(s)</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; agreement_categorical([0, 1])</span>
+<span class="sd">        0.5</span>
+<span class="sd">        &gt;&gt;&gt; agreement_categorical([&quot;a&quot;, &quot;b&quot;])</span>
+<span class="sd">        0.5</span>
+<span class="sd">        &gt;&gt;&gt; agreement_categorical([1, 1, np.nan])</span>
+<span class="sd">        1.0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_agreement</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_remove_empty</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">_mode</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_value_or_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">_agreement</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">ratings</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="agreement_numerical"><a class="viewcode-back" href="../../../api/audpsychometric.agreement_numerical.html#audpsychometric.agreement_numerical">[docs]</a><span class="k">def</span> <span class="nf">agreement_numerical</span><span class="p">(</span>
+    <span class="n">ratings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span>
+    <span class="n">minimum</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">maximum</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Confidence score for numerical ratings.</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \text{agreement}(\text{ratings}) =</span>
+<span class="sd">        \max(</span>
+<span class="sd">        0, 1 - \frac{\text{std}(\text{ratings})}</span>
+<span class="sd">        {\text{maximum} - \frac{1}{2} (\text{minimum} + \text{maximum})}</span>
+<span class="sd">        )</span>
+
+<span class="sd">    with :math:`\text{std}` the population standard deviation of the ratings.</span>
+<span class="sd">    ``nan`` values are ignored per item.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: ratings.</span>
+<span class="sd">            When given as a 1-dimensional array,</span>
+<span class="sd">            it is treated as a row vector</span>
+<span class="sd">        minimum: lower limit of possible rating value</span>
+<span class="sd">        maximum: upper limit of possible rating value</span>
+<span class="sd">        axis: axis along which the agreement is computed.</span>
+<span class="sd">            A value of ``1``</span>
+<span class="sd">            assumes stimuli as rows</span>
+<span class="sd">            and raters as columns</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numerical agreement score(s)</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; agreement_numerical([0, 1], 0, 1)</span>
+<span class="sd">        0.0</span>
+<span class="sd">        &gt;&gt;&gt; agreement_numerical([0, 1], 0, 2)</span>
+<span class="sd">        0.5</span>
+<span class="sd">        &gt;&gt;&gt; agreement_numerical([0, 0], 0, 1)</span>
+<span class="sd">        1.0</span>
+<span class="sd">        &gt;&gt;&gt; agreement_numerical([0, np.nan], 0, 1)</span>
+<span class="sd">        1.0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_agreement</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+        <span class="n">cutoff_max</span> <span class="o">=</span> <span class="n">maximum</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">minimum</span> <span class="o">+</span> <span class="n">maximum</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff_max</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">_value_or_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">_agreement</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">ratings</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="evaluator_weighted_estimator"><a class="viewcode-back" href="../../../api/audpsychometric.evaluator_weighted_estimator.html#audpsychometric.evaluator_weighted_estimator">[docs]</a><span class="k">def</span> <span class="nf">evaluator_weighted_estimator</span><span class="p">(</span>
+    <span class="n">ratings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Evaluator weighted estimator (EWE) of raters&#39; votes.</span>
+
+<span class="sd">    The EWE is described in</span>
+<span class="sd">    :cite:`coutinho-etal-2016-assessing` as follows:</span>
+
+<span class="sd">    The EWE average of the individual ratings considers</span>
+<span class="sd">    that each evaluator is subject to an individual amount of disturbance</span>
+<span class="sd">    during the evaluation,</span>
+<span class="sd">    by introducing evaluator-dependent weights</span>
+<span class="sd">    that correspond to the correlation</span>
+<span class="sd">    between the listener’s responses</span>
+<span class="sd">    and the average ratings of all evaluators.</span>
+
+<span class="sd">    See also `audformat#102`_ for implementation details.</span>
+
+<span class="sd">    .. _audformat#102: https://github.com/audeering/audformat/issues/102</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: ratings.</span>
+<span class="sd">            Has to contain more than one rater</span>
+<span class="sd">            and more than one stimuli</span>
+<span class="sd">        axis: axis along which the EWE is computed.</span>
+<span class="sd">            A value of ``1``</span>
+<span class="sd">            assumes stimuli as rows</span>
+<span class="sd">            and raters as columns</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        EWE over raters</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; evaluator_weighted_estimator([[1, 1, 0], [2, 2, 1]])</span>
+<span class="sd">        array([0.66666667, 1.66666667])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span>
+    <span class="n">agreements</span> <span class="o">=</span> <span class="n">rater_agreement</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+    <span class="c1"># Ensure columns represents different raters</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ratings</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">_value_or_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">agreements</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">agreements</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="mode"><a class="viewcode-back" href="../../../api/audpsychometric.mode.html#audpsychometric.mode">[docs]</a><span class="k">def</span> <span class="nf">mode</span><span class="p">(</span>
+    <span class="n">ratings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mode of categorical ratings.</span>
+
+<span class="sd">    ``None`` and ``nan`` values are ignored per item.</span>
+<span class="sd">    If the values are numerical</span>
+<span class="sd">    and there are several winning categories,</span>
+<span class="sd">    the average over those is returned,</span>
+<span class="sd">    and rounded to the next higher integer.</span>
+<span class="sd">    If the values are not numerical,</span>
+<span class="sd">    the first occurring value is returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: ratings.</span>
+<span class="sd">            When given as a 1-dimensional array,</span>
+<span class="sd">            it is treated as a row vector</span>
+<span class="sd">        axis: axis along which the mode is computed.</span>
+<span class="sd">            A value of ``1``</span>
+<span class="sd">            assumes stimuli as rows</span>
+<span class="sd">            and raters as columns</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        mode over raters</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; mode([0, 0, 1])</span>
+<span class="sd">        0</span>
+<span class="sd">        &gt;&gt;&gt; mode([&quot;a&quot;, &quot;a&quot;, &quot;b&quot;])</span>
+<span class="sd">        &#39;a&#39;</span>
+<span class="sd">        &gt;&gt;&gt; mode([0, 1])</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; mode([&quot;a&quot;, &quot;b&quot;])</span>
+<span class="sd">        &#39;a&#39;</span>
+<span class="sd">        &gt;&gt;&gt; mode([0, 2])</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; mode([&quot;a&quot;, &quot;c&quot;])</span>
+<span class="sd">        &#39;a&#39;</span>
+<span class="sd">        &gt;&gt;&gt; mode([None, None, &quot;a&quot;])</span>
+<span class="sd">        &#39;a&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">_value_or_array</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_mode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">remove_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">ratings</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="rater_agreement"><a class="viewcode-back" href="../../../api/audpsychometric.rater_agreement.html#audpsychometric.rater_agreement">[docs]</a><span class="k">def</span> <span class="nf">rater_agreement</span><span class="p">(</span>
+    <span class="n">ratings</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate rater agreements.</span>
+
+<span class="sd">    Calculate the agreement of a rater</span>
+<span class="sd">    by the Pearson correlation of a rater</span>
+<span class="sd">    with the mean score of all other raters.</span>
+
+<span class="sd">    This should not be confused with the agreement value</span>
+<span class="sd">    that relates to a rated stimulus,</span>
+<span class="sd">    e.g. :func:`audspychometric.agreement_numerical`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: ratings.</span>
+<span class="sd">            Has to contain more than one rater</span>
+<span class="sd">            and more than one stimuli</span>
+<span class="sd">        axis: axis along which the rater agreement is computed.</span>
+<span class="sd">            A value of ``1``</span>
+<span class="sd">            assumes stimuli as rows</span>
+<span class="sd">            and raters as columns</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        rater agreements</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; rater_agreement([[1, 1, 0], [2, 2, 1]])</span>
+<span class="sd">        array([1., 1., 1.])</span>
+<span class="sd">        &gt;&gt;&gt; rater_agreement([[1, 1, 0], [2, 2, 1], [2, 2, 2]])</span>
+<span class="sd">        array([0.94491118, 0.94491118, 0.8660254 ])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span>
+
+    <span class="c1"># Ensure columns represents different raters</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ratings</span> <span class="o">=</span> <span class="n">ratings</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="c1"># Remove stimuli (rows),</span>
+    <span class="c1"># which miss ratings for one rater or more</span>
+    <span class="n">ratings</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">[:,</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)]</span>
+
+    <span class="c1"># Calculate agreement as Pearson Correlation Coefficient</span>
+    <span class="c1"># between the raters&#39; ratings</span>
+    <span class="c1"># and the average ratings of all other raters</span>
+    <span class="n">agreements</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ratings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">ratings_selected_rater</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span>
+        <span class="n">average_ratings_other_raters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">agreements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">audmetric</span><span class="o">.</span><span class="n">pearson_cc</span><span class="p">(</span><span class="n">ratings_selected_rater</span><span class="p">,</span> <span class="n">average_ratings_other_raters</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">agreements</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_value_or_array</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert single valued arrays to value.</span>
+
+<span class="sd">    Squeeze array,</span>
+<span class="sd">    and convert to single value,</span>
+<span class="sd">    if it contains only a single entry.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        values: input array</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        converted array / object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">values</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">values</span>
+
+
+<span class="k">def</span> <span class="nf">_mode</span><span class="p">(</span><span class="n">ratings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">remove_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mode of categorical values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: 1-dimensional array</span>
+<span class="sd">        remove_nan: if ``True`` remove ``None`` and ``nan`` from ``ratings``</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        mode</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">remove_nan</span><span class="p">:</span>
+        <span class="n">ratings</span> <span class="o">=</span> <span class="n">_remove_empty</span><span class="p">(</span><span class="n">ratings</span><span class="p">)</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Find indices with maximum count</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">counts</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">counts</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Take average over values with same count</span>
+        <span class="c1"># and round to next integer</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="c1"># If we cannot take the mean,</span>
+        <span class="c1"># take the first occurrence</span>
+        <span class="n">first_occurence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ratings</span> <span class="o">==</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]])</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">ratings</span><span class="p">[</span><span class="n">first_occurence</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">mode</span>
+
+
+<span class="k">def</span> <span class="nf">_remove_empty</span><span class="p">(</span><span class="n">ratings</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Remove empty ratings.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ratings: 1-dimensional array</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ratings without ``None`` and ``nan`` entries</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">rating</span> <span class="k">for</span> <span class="n">rating</span> <span class="ow">in</span> <span class="n">ratings</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">rating</span><span class="p">)])</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div>
+      
+      
+      
+      
+      
+      
+      
+      
+        <ul>
+          <li><a href="http://data.pp.audeering.com">Data</a></li>
+          <li><a href="http://devops.pp.audeering.com/sphinx/">Docs</a></li>
+          <li><a href="http://devops.pp.audeering.com/">Infra</a></li>
+          <li><a href="http://models.pp.audeering.com">Models</a></li>
+          <li><a href="http://research.pp.audeering.com">Research</a></li>
+          <li><a href="http://tools.pp.audeering.com">Tools</a></li>
+        </ul>
+      
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

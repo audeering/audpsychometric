@@ -1,0 +1,6 @@
+﻿cronbachs\_alpha\(\)
+====================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.cronbachs_alpha

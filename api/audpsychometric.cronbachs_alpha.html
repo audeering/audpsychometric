@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cronbachs_alpha() &mdash; Documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/audeering.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="congeneric_reliability()" href="audpsychometric.congeneric_reliability.html" />
+    <link rel="prev" title="agreement_numerical()" href="audpsychometric.agreement_numerical.html" />
+    
+  
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          <a href="../index.html">
+          
+            <img src="../_static/images/audeering.png" class="logo" alt="audEERING"/>
+          
+          
+            <span> audpsychometric</span>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="audpsychometric.html">audpsychometric</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.agreement_categorical.html">agreement_categorical()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.agreement_numerical.html">agreement_numerical()</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">cronbachs_alpha()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.congeneric_reliability.html">congeneric_reliability()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.evaluator_weighted_estimator.html">evaluator_weighted_estimator()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.intra_class_correlation.html">intra_class_correlation()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.list_datasets.html">list_datasets()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.mode.html">mode()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.rater_agreement.html">rater_agreement()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audpsychometric.read_dataset.html">read_dataset()</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bibliography.html">Bibliography</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">audpsychometric</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="audpsychometric.html">audpsychometric</a> &raquo;</li>
+      <li>cronbachs_alpha()</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://gitlab.audeering.com/audeering/audpsychometric/" class="fa fa-gitlab"> GitLab</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cronbachs-alpha">
+<h1>cronbachs_alpha()<a class="headerlink" href="#cronbachs-alpha" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="audpsychometric.cronbachs_alpha">
+<span class="sig-prename descclassname"><span class="pre">audpsychometric.</span></span><span class="sig-name descname"><span class="pre">cronbachs_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/audpsychometric/core/reliability.html#cronbachs_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#audpsychometric.cronbachs_alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Cronbach’s alpha.</p>
+<p>The Cronbach coefficient quantifying interrater agreement.
+Returns alpha as a float
+and additional information specific to this measure
+collated into a dictionary.</p>
+<p>Cronbach’s alpha generalizes Cohen’s kappa
+and can handle three or more answers per variable.
+It is suitable for Likert type scale answers.
+A <a class="reference external" href="http://evaluationdashboard.com/index.php/2012/09/22/congeneric_reliability_r/">blogpost on congeneric reliability</a> states
+that Cronbach’s alpha assumes essential tau-equivalence
+and underestimates reliability.
+A tau-equivalent measurement model
+is a special case of a congeneric measurement model
+with all loadings equal <span id="id1">[<a class="reference internal" href="../bibliography.html#id7" title="https://en.wikipedia.org/wiki/Cronbach.">cro</a>]</span>.</p>
+<p>A simplified formula is given in <span id="id2">Hilsdorf [<a class="reference internal" href="../bibliography.html#id9" title="Max Hilsdorf. Cronbach’s alpha: theory and application in python. Towards Data Science: https://towardsdatascience.com/cronbachs-alpha-theory-and-application-in-python-d2915dd63586.">Hil</a>]</span>
+that relates the measure to the average reliability:</p>
+<div class="math notranslate nohighlight">
+\[\alpha_{st} = \frac{N \times \bar{r}} {1 + (N - 1) \times \bar{r}}\]</div>
+<p>where</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(N\)</span> is the number of items (labelled chunks)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar{r}\)</span> is the average correlation between the items</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ratings</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>) – ratings.
+When given as a 1-dimensional array,
+it is treated as a row vector</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – axis along which the rater confidence is computed.
+A value of <code class="docutils literal notranslate"><span class="pre">1</span></code>
+assumes stimuli as rows</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Cronbach’s alpha and additional results lumped into dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="audpsychometric.congeneric_reliability.html" class="btn btn-neutral float-right" title="congeneric_reliability()" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="audpsychometric.agreement_numerical.html" class="btn btn-neutral float-left" title="agreement_numerical()" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div>
+      
+      
+      
+      
+      
+      
+      
+      
+        <ul>
+          <li><a href="http://data.pp.audeering.com">Data</a></li>
+          <li><a href="http://devops.pp.audeering.com/sphinx/">Docs</a></li>
+          <li><a href="http://devops.pp.audeering.com/">Infra</a></li>
+          <li><a href="http://models.pp.audeering.com">Models</a></li>
+          <li><a href="http://research.pp.audeering.com">Research</a></li>
+          <li><a href="http://tools.pp.audeering.com">Tools</a></li>
+        </ul>
+      
+    <p>
+        
+        
+        
+          Built with <a href="https://www.sphinx-doc.org">Sphinx</a> on 2024/09/05 using the <a href="https://github.com/audeering/sphinx-audeering-theme/">audEERING theme</a>
+        
+    </p>
+  </div>
+
+  <div role="contentinfo">
+    <p>
+        
+      &copy; audEERING GmbH
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

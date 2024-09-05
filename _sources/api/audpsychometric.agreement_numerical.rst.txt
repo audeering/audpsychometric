@@ -1,0 +1,6 @@
+﻿agreement\_numerical\(\)
+========================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.agreement_numerical

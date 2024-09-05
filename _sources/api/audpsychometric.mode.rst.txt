@@ -1,0 +1,6 @@
+﻿mode\(\)
+========
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.mode

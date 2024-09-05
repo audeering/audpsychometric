@@ -1,0 +1,6 @@
+﻿list\_datasets\(\)
+==================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.list_datasets

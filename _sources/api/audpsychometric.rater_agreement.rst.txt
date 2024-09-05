@@ -1,0 +1,6 @@
+﻿rater\_agreement\(\)
+====================
+
+.. currentmodule:: audpsychometric
+
+.. autofunction:: audpsychometric.rater_agreement
