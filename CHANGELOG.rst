@@ -7,6 +7,16 @@ The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
 
+Version 0.1.1 (2024-09-05)
+--------------------------
+
+* Added: support for Python 3.12
+* Added: support for Python 3.11
+* Fixed: link to Github in documentation header
+* Fixed: remove links to internal documentation
+  in documentation footer
+
+
 Version 0.1.0 (2024-09-05)
 --------------------------
 
