@@ -40,11 +40,11 @@ def read_dataset(data_set_name: str) -> pd.DataFrame:
     return df
 
 
-def list_datasets():
-    r"""List tests datasets available in package.
+def list_datasets() -> pd.DataFrame:
+    """List datasets available in package.
 
     Returns:
-        dataframe listing available datasets
+        dataframe listing available datasets.
 
     Examples:
         >>> list_datasets()

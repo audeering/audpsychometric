@@ -1,4 +1,8 @@
-import typing
+
+from __future__ import annotations
+
+from collections.abc import Callable
+from collections.abc import Sequence
 
 import numpy as np
 import pandas as pd
@@ -7,10 +11,10 @@ import audmetric
 
 
 def agreement_categorical(
-    ratings: typing.Sequence,
+    ratings: Sequence,
     *,
     axis: int = 1,
-) -> typing.Union[float, np.ndarray]:
+) -> float | np.ndarray:
     r"""Confidence score for categorical ratings.
 
     The agreement for categorical data
@@ -50,12 +54,12 @@ def agreement_categorical(
 
 
 def agreement_numerical(
-    ratings: typing.Sequence,
+    ratings: Sequence,
     minimum: float,
     maximum: float,
     *,
     axis: int = 1,
-) -> typing.Union[float, np.ndarray]:
+) -> float | np.ndarray:
     r"""Confidence score for numerical ratings.
 
     .. math::
@@ -103,10 +107,10 @@ def agreement_numerical(
 
 
 def evaluator_weighted_estimator(
-    ratings: typing.Sequence,
+    ratings: Sequence,
     *,
     axis: int = 1,
-) -> typing.Union[float, np.ndarray]:
+) -> float | np.ndarray:
     r"""Evaluator weighted estimator (EWE) of raters' votes.
 
     The EWE is described in
@@ -150,10 +154,10 @@ def evaluator_weighted_estimator(
 
 
 def mode(
-    ratings: typing.Sequence,
+    ratings: Sequence,
     *,
     axis: int = 1,
-) -> typing.Any:
+) -> object:
     r"""Mode of categorical ratings.
 
     ``None`` and ``nan`` values are ignored per item.
@@ -200,7 +204,7 @@ def mode(
 
 
 def rater_agreement(
-    ratings: typing.Sequence,
+    ratings: Sequence,
     *,
     axis: int = 1,
 ) -> np.ndarray:
@@ -256,7 +260,7 @@ def rater_agreement(
     return np.array(agreements)
 
 
-def _value_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
+def _value_or_array(values: np.ndarray) -> float | np.ndarray:
     r"""Convert single valued arrays to value.
 
     Squeeze array,
@@ -276,7 +280,7 @@ def _value_or_array(values: np.ndarray) -> typing.Union[float, np.ndarray]:
     return values
 
 
-def _mode(ratings: np.ndarray, *, remove_nan=False) -> typing.Any:
+def _mode(ratings: np.ndarray, *, remove_nan=False) -> object:
     """Mode of categorical values.
 
     Args:
