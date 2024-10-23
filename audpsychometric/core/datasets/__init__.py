@@ -44,7 +44,7 @@ def list_datasets() -> pd.DataFrame:
     """List datasets available in package.
 
     Returns:
-        dataframe listing available datasets.
+        dataframe listing available datasets
 
     Examples:
         >>> list_datasets()
