@@ -1,4 +1,6 @@
-import typing
+from __future__ import annotations
+
+from collections.abc import Sequence
 
 import numpy as np
 import pandas as pd
@@ -9,10 +11,10 @@ import statsmodels.formula.api
 
 
 def cronbachs_alpha(
-    ratings: typing.Sequence,
+    ratings: Sequence,
     *,
     axis: int = 1,
-) -> typing.Tuple[float, typing.Dict]:
+) -> tuple[float, dict]:
     r"""Calculate Cronbach's alpha.
 
     The Cronbach coefficient quantifying interrater agreement.
@@ -67,10 +69,10 @@ def cronbachs_alpha(
 
 
 def congeneric_reliability(
-    ratings: typing.Sequence,
+    ratings: Sequence,
     *,
     axis: int = 1,
-) -> typing.Tuple[float, typing.Dict]:
+) -> tuple[float, dict]:
     r"""Congeneric reliability coefficient.
 
     Extracts the first Principal Component as a measurement model
@@ -111,12 +113,12 @@ def congeneric_reliability(
 
 
 def intra_class_correlation(
-    ratings: typing.Sequence,
+    ratings: Sequence,
     *,
     axis: int = 1,
     icc_type: str = "ICC_1_1",
     anova_method: str = "pingouin",
-) -> typing.Tuple[float, typing.Dict]:
+) -> tuple[float, dict]:
     r"""Intraclass Correlation.
 
     Intraclass correlation calculates rating reliability by relating
